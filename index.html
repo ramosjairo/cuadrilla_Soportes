@@ -1,0 +1,1453 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inspecciones de Campo</title>
+
+    <style>
+        :root {
+            --primary-color: #2b579a;
+            --primary-dark: #1e3d6b;
+            --secondary-color: #e0e0e0;
+            --text-color: #333;
+            --border-radius: 12px;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: var(--font-family);
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: #f4f6f9;
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 10px;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 450px;
+            background: #ffffff;
+            border: 3px solid var(--primary-color);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 18px;
+            display: flex;
+            flex-direction: column;
+            min-height: 600px;
+            position: relative;
+        }
+
+        .view {
+            display: none;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+
+        .view.active {
+            display: flex;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            border-bottom: 2px solid #eaeaea;
+            padding-bottom: 8px;
+        }
+
+        .header-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .header h2 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #000;
+        }
+
+        .header svg {
+            width: 24px;
+            height: 24px;
+            fill: #000;
+        }
+
+        .filter-section {
+            background-color: #f0f4f8;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .filter-section label {
+            font-size: 0.85rem;
+            font-weight: bold;
+        }
+
+        .filter-section input[type="date"] {
+            flex-grow: 1;
+            padding: 6px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+
+        .top-actions {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .table-container {
+            flex-grow: 1;
+            overflow-y: auto;
+            max-height: 320px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            background: #fff;
+            margin-bottom: 65px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 0.85rem;
+        }
+
+        th {
+            background-color: #cccccc;
+            color: #333;
+            font-weight: 600;
+            padding: 8px;
+            position: sticky;
+            top: 0;
+            z-index: 2;
+        }
+
+        td {
+            padding: 8px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+            word-break: break-word;
+        }
+
+        tr:active {
+            background-color: #f0f4f8;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 3px 6px;
+            border-radius: 10px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            color: #fff;
+            text-align: center;
+        }
+        .badge-verde { background-color: #2e7d32; }
+        .badge-amarillo { background-color: #fbc02d; color: #000; }
+        .badge-rojo { background-color: #c62828; }
+
+        .btn {
+            border: none;
+            border-radius: var(--border-radius);
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 10px 14px;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: #ffffff;
+            box-shadow: 0 4px 6px rgba(43, 87, 154, 0.2);
+        }
+
+        .btn-primary:active {
+            background-color: var(--primary-dark);
+            transform: scale(0.98);
+        }
+
+        .btn-secondary {
+            background-color: var(--secondary-color);
+            color: #444;
+        }
+
+        .btn-success {
+            background-color: #2e7d32;
+            color: #fff;
+        }
+
+        .btn-danger {
+            background-color: #c62828;
+            color: #fff;
+        }
+
+        .bottom-actions {
+            position: absolute;
+            bottom: 15px;
+            left: 18px;
+            right: 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            pointer-events: none;
+        }
+
+        .bottom-actions .btn {
+            pointer-events: auto;
+        }
+
+        .form-group {
+            margin-bottom: 12px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 4px;
+            font-size: 0.85rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 8px 10px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            outline: none;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-color);
+        }
+
+        .checklist-container {
+            display: flex;
+            gap: 8px;
+        }
+
+        .checklist-item {
+            flex: 1;
+        }
+
+        .checklist-item input[type="radio"] {
+            display: none;
+        }
+
+        .checklist-item label {
+            display: block;
+            text-align: center;
+            padding: 8px;
+            border-radius: 8px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            font-weight: bold;
+            font-size: 0.8rem;
+            color: #fff;
+            opacity: 0.6;
+        }
+
+        .lbl-verde { background-color: #2e7d32; }
+        .lbl-amarillo { background-color: #fbc02d; color: #000 !important; }
+        .lbl-rojo { background-color: #c62828; }
+
+        .checklist-item input[type="radio"]:checked + label {
+            opacity: 1;
+            border-color: #000;
+            box-shadow: 0 0 6px rgba(0,0,0,0.25);
+        }
+
+        .photo-uploader {
+            border: 2px dashed #ccc;
+            border-radius: 8px;
+            padding: 10px;
+            text-align: center;
+            cursor: pointer;
+            background: #fafafa;
+        }
+
+        .photo-uploader input[type="file"] {
+            display: none;
+        }
+
+        .preview-img {
+            width: 100%;
+            max-height: 100px;
+            object-fit: cover;
+            border-radius: 6px;
+            margin-top: 6px;
+            display: none;
+        }
+
+        .inspector-badge-list {
+            margin-top: 8px;
+            max-height: 120px;
+            overflow-y: auto;
+            border: 1px solid #eee;
+            border-radius: 6px;
+            padding: 6px;
+        }
+
+        .inspector-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 6px 4px;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 0.85rem;
+        }
+
+        .btn-icon {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            padding: 2px 6px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 15px;
+        }
+
+        .modal-content {
+            background: #fff;
+            border-radius: var(--border-radius);
+            width: 100%;
+            max-width: 400px;
+            padding: 18px;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .modal-header {
+            font-weight: bold;
+            font-size: 1.1rem;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 6px;
+        }
+
+        .modal-body {
+            font-size: 0.9rem;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 6px;
+            border-top: 1px solid #eee;
+            padding-top: 8px;
+        }
+
+        .detail-photos {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .detail-photos img {
+            width: 100%;
+            height: 90px;
+            object-fit: cover;
+            border-radius: 6px;
+            cursor: zoom-in;
+        }
+
+        .modal-zoom {
+            display: none; 
+            position: fixed; 
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.95);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-zoom-contenido {
+            max-width: 95%;
+            max-height: 85%;
+            object-fit: contain;
+            border-radius: 4px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+        }
+
+        .modal-zoom-cerrar {
+            position: absolute;
+            top: 20px;
+            right: 25px;
+            color: #fff;
+            font-size: 35px;
+            font-weight: bold;
+            cursor: pointer;
+            background: rgba(0,0,0,0.5);
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            user-select: none;
+        }
+
+        .status-config {
+            font-size: 0.75rem;
+            padding: 6px 10px;
+            border-radius: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            user-select: none;
+        }
+
+        .status-ready { background-color: #e8f5e9; color: #2e7d32; }
+        .status-empty { background-color: #ffebee; color: #c62828; animation: blink 1.5s infinite; }
+
+        @keyframes blink {
+            50% { opacity: 0.6; }
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #333;
+            color: #fff;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 1500;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+
+    <datalist id="listaCallesSugeridas"></datalist>
+
+    <div class="app-container">
+        
+        <!-- PANTALLA PRINCIPAL -->
+        <div id="viewMain" class="view active">
+            <div class="header">
+                <div class="header-title">
+                    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+                    <h2>Inspecciones</h2>
+                </div>
+                <div id="configStatus" class="status-config status-empty" onclick="mostrarConfiguracion()">
+                    ⚙️ Sin Configurar
+                </div>
+            </div>
+
+            <!-- Filtro de Fecha Activa -->
+            <div class="filter-section">
+                <label for="filterDate">Día de Trabajo:</label>
+                <input type="date" id="filterDate" onchange="cambiarFechaActiva()">
+            </div>
+
+            <div class="top-actions">
+                <button class="btn btn-success" style="flex: 1;" onclick="compartirOEnviarReporte()">
+                    📤 Compartir Reporte
+                </button>
+                <button class="btn btn-secondary" onclick="confirmarReiniciarDia()" title="Iniciar Nuevo Día">
+                    🔄 Nuevo Día
+                </button>
+            </div>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Calle</th>
+                            <th>Edificio/Casa</th>
+                            <th>Color</th>
+                            <th>📜 Nro.</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tablaCuerpo"></tbody>
+                </table>
+            </div>
+
+            <!-- BARRA DE ACCIONES INFERIOR REESTRUCTURADA -->
+            <div class="bottom-actions">
+                <button id="btnDatosCuadrilla" class="btn btn-secondary" style="border-radius: 50%; width: 44px; height: 44px; padding: 0; font-size: 1.2rem; box-shadow: 0 2px 6px rgba(0,0,0,0.15);" title="Datos de cuadrilla (Pulsación Larga)">
+                    👥
+                </button>
+                
+                <button class="btn btn-primary" style="flex-grow: 1; height: 44px;" onclick="intentarNuevaInspeccion()">
+                    ➕ Inspección
+                </button>
+            </div>
+        </div>
+
+        <!-- PANTALLA DE FORMULARIO DE INSPECCIÓN -->
+        <div id="viewForm" class="view">
+            <div class="header">
+                <h2 id="formTitle">Nueva Inspección</h2>
+            </div>
+            <form id="inspeccionForm" onsubmit="guardarFormulario(event)">
+                <input type="hidden" id="editId">
+                
+                <div class="form-group">
+                    <label for="txtCalle">Calle/Sector</label>
+                    <input type="text" id="txtCalle" list="listaCallesSugeridas" class="form-control" placeholder="Ej. Calle Real" required autocomplete="off">
+                </div>
+
+                <div class="form-group">
+                    <label for="txtEdificio">Edificación / Casa</label>
+                    <input type="text" id="txtEdificio" class="form-control" placeholder="Ej. Casa 32" required autocomplete="off">
+                </div>
+
+                <div class="form-group">
+                    <label>Color de Etiqueta</label>
+                    <div class="checklist-container">
+                        <div class="checklist-item">
+                            <input type="radio" id="colVerde" name="colorEtiqueta" value="Verde" required>
+                            <label for="colVerde" class="lbl-verde">Verde</label>
+                        </div>
+                        <div class="checklist-item">
+                            <input type="radio" id="colAmarillo" name="colorEtiqueta" value="Yellow">
+                            <label for="colAmarillo" class="lbl-amarillo">Amarillo</label>
+                        </div>
+                        <div class="checklist-item">
+                            <input type="radio" id="colRojo" name="colorEtiqueta" value="Rojo">
+                            <label for="colRojo" class="lbl-rojo">Rojo</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="txtCertificado">Nro. Certificado</label>
+                    <input type="text" id="txtCertificado" class="form-control" placeholder="Ej. 92110" required autocomplete="off">
+                </div>
+
+                <div class="form-group">
+                    <label>Foto del Frente</label>
+                    <div class="photo-uploader" onclick="document.getElementById('fileFrente').click()">
+                        <span>📸 Capturar/Elegir Frente</span>
+                        <input type="file" id="fileFrente" accept="image/*" onchange="procesarImagen(this, 'prevFrente')">
+                        <img id="prevFrente" class="preview-img" alt="Frente">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Foto de Respaldo</label>
+                    <div class="photo-uploader" onclick="document.getElementById('fileRespaldo').click()">
+                        <span>📸 Capturar/Elegir Respaldo</span>
+                        <input type="file" id="fileRespaldo" accept="image/*" onchange="procesarImagen(this, 'prevRespaldo')">
+                        <img id="prevRespaldo" class="preview-img" alt="Respaldo">
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 10px; margin-top: 15px;">
+                    <button type="button" class="btn btn-secondary" style="flex: 1;" onclick="regresarPrincipal()">Cancelar</button>
+                    <button type="submit" class="btn btn-primary" style="flex: 1;">Guardar</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- PANTALLA: CONFIGURACIÓN / PARÁMETROS GLOBALES -->
+        <div id="viewConfig" class="view">
+            <div class="header">
+                <h2>⚙️ Parámetros Globales</h2>
+            </div>
+            
+            <form id="configForm" onsubmit="guardarConfiguracion(event)">
+                <div class="form-group">
+                    <label for="cfgGrupo">Grupo</label>
+                    <input type="text" id="cfgGrupo" class="form-control" placeholder="Ej. Grupo Central" required autocomplete="off">
+                </div>
+
+                <div class="form-group">
+                    <label for="cfgParroquia">Parroquia</label>
+                    <input type="text" id="cfgParroquia" class="form-control" placeholder="Ej. El Recreo" required autocomplete="off">
+                </div>
+
+                <div class="form-group">
+                    <label>Nómina de Inspectores</label>
+                    <div style="display: flex; gap: 8px;">
+                        <input type="text" id="txtNewInspector" class="form-control" placeholder="Nombre de Inspector" autocomplete="off">
+                        <button type="button" class="btn btn-primary" style="padding: 0 16px; font-size:1.2rem;" onclick="agregarInspectorNavegacion()">+</button>
+                    </div>
+                    <div class="inspector-badge-list" id="lstInspectores"></div>
+                </div>
+
+                <div style="display: flex; gap: 10px; margin-top: 15px;">
+                    <button type="button" class="btn btn-secondary" style="flex: 1;" onclick="regresarPrincipal()">Volver</button>
+                    <button type="submit" class="btn btn-success" style="flex: 1;">Guardar Equipo</button>
+                </div>
+            </form>
+
+            <div style="margin-top: 45px; border-top: 1px dashed #ccc; padding-top: 15px; text-align: center;">
+                <button type="button" class="btn btn-danger" style="font-size: 0.8rem; padding: 6px 12px;" onclick="eliminarTodoElHistorialDB()">
+                    ⚠️ Borrar Todo el Historial (Base de Datos)
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- MODAL DE DETALLES -->
+    <div id="modalDetalles" class="modal" onclick="cerrarModal('modalDetalles')">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div class="modal-header" id="detTitle">Detalle</div>
+            <div class="modal-body" id="detBody"></div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="cerrarModal('modalDetalles')">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL MENU DE FILAS -->
+    <div id="modalMenu" class="modal" onclick="cerrarModal('modalMenu')">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div class="modal-header">Opciones</div>
+            <div class="modal-body" style="display: flex; flex-direction: column; gap: 10px;">
+                <p id="menuTargetText" style="font-weight: bold; text-align: center; margin-bottom: 8px;"></p>
+                <button class="btn btn-primary" id="btnMenuEditar" style="width: 100%;">✏️ Editar Registro</button>
+                <button class="btn btn-danger" id="btnMenuEliminar" style="width: 100%;">🗑️ Eliminar Registro</button>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="cerrarModal('modalMenu')">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL SUBMENÚ DISCRETO: COMPARTIR DATA CUADRILLA (JSON POR EMAIL) -->
+    <div id="modalSincronizacion" class="modal" onclick="cerrarModal('modalSincronizacion')">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div class="modal-header">📲 Datos de Cuadrilla (Colegas)</div>
+            <div class="modal-body" style="display: flex; flex-direction: column; gap: 12px; padding-top: 10px;">
+                <p style="font-size: 0.85rem; color: #555; text-align: center;">Manejo seguro de archivos JSON vía Correo Electrónico.</p>
+                
+                <button class="btn btn-primary" style="width: 100%; font-size: 0.9rem;" onclick="exportarDataJSONPorEmail()">
+                    📥 Exportar Mi Data (.json por Email)
+                </button>
+                
+                <button class="btn btn-secondary" style="width: 100%; font-size: 0.9rem; background-color: #f0f4f8; border: 1px dashed #b0c4de;" onclick="document.getElementById('fileImport').click()">
+                    📤 Importar Data de Colega
+                </button>
+                <input type="file" id="fileImport" accept=".json" style="display:none;" onchange="importarDataJSON(this)">
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="cerrarModal('modalSincronizacion')">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- VISOR DE ZOOM PARA FOTOS -->
+    <div id="modalZoom" class="modal-zoom" onclick="cerrarZoom()">
+        <span class="modal-zoom-cerrar" onclick="cerrarZoom()">&times;</span>
+        <img class="modal-zoom-contenido" id="imgZoomed" alt="Inspección Ampliada">
+    </div>
+
+    <div id="toast" class="toast"></div>
+
+    <script>
+        const DB_NAME = "InspeccionesDB";
+        const DB_VERSION = 1;
+        let db;
+
+        const request = indexedDB.open(DB_NAME, DB_VERSION);
+        request.onerror = e => console.error("Error DB:", e);
+        request.onsuccess = e => {
+            db = e.target.result;
+            inicializarFechaHoy();
+            cargarTabla();
+            vincularEventosBotonCuadrilla();
+        };
+
+        request.onupgradeneeded = e => {
+            const dbInstance = e.target.result;
+            if (!dbInstance.objectStoreNames.contains("inspecciones")) {
+                dbInstance.createObjectStore("inspecciones", { keyPath: "id", autoIncrement: true });
+            }
+            if (!dbInstance.objectStoreNames.contains("configuracion")) {
+                dbInstance.createObjectStore("configuracion", { keyPath: "fecha" });
+            }
+        };
+
+        let pressTimer;
+        let cuadrillaPressTimer;
+        let isLongPress = false;
+        let activeRecordId = null;
+        let fechaActual = ""; 
+        let inspectoresActuales = []; 
+        let callesExistentes = new Set();
+
+        function inicializarFechaHoy() {
+            const hoy = new Date();
+            const year = hoy.getFullYear();
+            const month = String(hoy.getMonth() + 1).padStart(2, '0');
+            const day = String(hoy.getDate()).padStart(2, '0');
+            fechaActual = `${year}-${month}-${day}`;
+            document.getElementById("filterDate").value = fechaActual;
+            comprobarConfiguracionFecha(fechaActual);
+        }
+
+        function cambiarFechaActiva() {
+            fechaActual = document.getElementById("filterDate").value;
+            comprobarConfiguracionFecha(fechaActual);
+            cargarTabla();
+        }
+
+        function comprobarConfiguracionFecha(fecha, callback) {
+            if (!db) return;
+            const transaction = db.transaction(["configuracion"], "readonly");
+            const store = transaction.objectStore("configuracion");
+            const requestGet = store.get(fecha);
+
+            requestGet.onsuccess = e => {
+                const config = e.target.result;
+                const statusDiv = document.getElementById("configStatus");
+
+                if (config) {
+                    statusDiv.innerText = "⚙️ Equipo Configurado";
+                    statusDiv.className = "status-config status-ready";
+                    inspectoresActuales = config.inspectores || [];
+                    if (callback) callback(true);
+                } else {
+                    buscarUltimaConfiguracion(fecha, statusDiv, callback);
+                }
+            };
+            requestGet.onerror = () => {
+                if (callback) callback(false);
+            };
+        }
+
+        function buscarUltimaConfiguracion(fechaDestino, statusDiv, callback) {
+            const transaction = db.transaction(["configuracion"], "readonly");
+            const store = transaction.objectStore("configuracion");
+            const requestCursor = store.openCursor(null, "prev");
+
+            requestCursor.onsuccess = e => {
+                const cursor = e.target.result;
+                if (cursor) {
+                    const ultimaConfig = cursor.value;
+                    const nuevaConfig = {
+                        fecha: fechaDestino,
+                        grupo: ultimaConfig.grupo,
+                        parroquia: ultimaConfig.parroquia,
+                        inspectores: ultimaConfig.inspectores
+                    };
+
+                    const writeTrans = db.transaction(["configuracion"], "readwrite");
+                    const writeStore = writeTrans.objectStore("configuracion");
+                    writeStore.put(nuevaConfig).onsuccess = () => {
+                        statusDiv.innerText = "⚙️ Equipo Configurado";
+                        statusDiv.className = "status-config status-ready";
+                        inspectoresActuales = nuevaConfig.inspectores;
+                        mostrarToast("📋 Copiado equipo de trabajo anterior");
+                        if (callback) callback(true);
+                    };
+                } else {
+                    statusDiv.innerText = "⚙️ Sin Configurar";
+                    statusDiv.className = "status-config status-empty";
+                    inspectoresActuales = [];
+                    if (callback) callback(false);
+                }
+            };
+            requestCursor.onerror = () => {
+                statusDiv.innerText = "⚙️ Sin Configurar";
+                statusDiv.className = "status-config status-empty";
+                inspectoresActuales = [];
+                if (callback) callback(false);
+            };
+        }
+
+        function vincularEventosBotonCuadrilla() {
+            const btnCuadrilla = document.getElementById("btnDatosCuadrilla");
+
+            const iniciarPresionCuadrilla = e => {
+                isLongPress = false;
+                cuadrillaPressTimer = setTimeout(() => {
+                    isLongPress = true;
+                    abrirModal("modalSincronizacion");
+                }, 1500); 
+            };
+
+            const cancelarPresionCuadrilla = () => clearTimeout(cuadrillaPressTimer);
+
+            const ejecutarClicCuadrilla = (e) => {
+                clearTimeout(cuadrillaPressTimer);
+                if (!isLongPress) {
+                    mostrarToast("ℹ️ Mantén presionado para ver Datos de Cuadrilla");
+                }
+            };
+
+            btnCuadrilla.addEventListener("touchstart", iniciarPresionCuadrilla, { passive: true });
+            btnCuadrilla.addEventListener("touchend", ejecutarClicCuadrilla);
+            btnCuadrilla.addEventListener("touchmove", cancelarPresionCuadrilla, { passive: true });
+
+            btnCuadrilla.addEventListener("mousedown", iniciarPresionCuadrilla);
+            btnCuadrilla.addEventListener("mouseup", ejecutarClicCuadrilla);
+            btnCuadrilla.addEventListener("mouseleave", cancelarPresionCuadrilla);
+        }
+
+        function renderizarListaInspectores() {
+            const contenedor = document.getElementById("lstInspectores");
+            contenedor.innerHTML = "";
+            inspectoresActuales.forEach((ins, idx) => {
+                const div = document.createElement("div");
+                div.className = "inspector-row";
+                div.innerHTML = `
+                    <span>👤 ${ins}</span>
+                    <button type="button" class="btn-icon" style="color:red;" onclick="eliminarInspectorTemporal(${idx})">❌</button>
+                `;
+                contenedor.appendChild(div);
+            });
+        }
+
+        function agregarInspectorNavegacion() {
+            const input = document.getElementById("txtNewInspector");
+            const nombre = input.value.trim();
+            if (nombre) {
+                inspectoresActuales.push(nombre);
+                input.value = "";
+                renderizarListaInspectores();
+            }
+        }
+
+        function eliminarInspectorTemporal(idx) {
+            inspectoresActuales.splice(idx, 1);
+            renderizarListaInspectores();
+        }
+
+        function mostrarConfiguracion() {
+            document.getElementById("configForm").reset();
+            if (!db) {
+                renderizarListaInspectores();
+                document.getElementById("viewMain").classList.remove("active");
+                document.getElementById("viewConfig").classList.add("active");
+                return;
+            }
+
+            const transaction = db.transaction(["configuracion"], "readonly");
+            const store = transaction.objectStore("configuracion");
+            store.get(fechaActual).onsuccess = e => {
+                const config = e.target.result;
+                if (config) {
+                    document.getElementById("cfgGrupo").value = config.grupo;
+                    document.getElementById("cfgParroquia").value = config.parroquia;
+                    inspectoresActuales = config.inspectores || [];
+                } else {
+                    inspectoresActuales = [];
+                }
+                renderizarListaInspectores();
+            };
+            document.getElementById("viewMain").classList.remove("active");
+            document.getElementById("viewConfig").classList.add("active");
+        }
+
+        function guardarConfiguracion(e) {
+            e.preventDefault();
+            const grupo = document.getElementById("cfgGrupo").value.trim();
+            const parroquia = document.getElementById("cfgParroquia").value.trim();
+
+            if (inspectoresActuales.length === 0) {
+                alert("⚠️ Debe agregar al menos un inspector al equipo de trabajo.");
+                return;
+            }
+
+            const configObject = {
+                fecha: fechaActual,
+                grupo,
+                parroquia,
+                inspectores: inspectoresActuales
+            };
+
+            const transaction = db.transaction(["configuracion"], "readwrite");
+            const store = transaction.objectStore("configuracion");
+            store.put(configObject).onsuccess = () => {
+                mostrarToast("✅ Configuración guardada");
+                comprobarConfiguracionFecha(fechaActual);
+                regresarPrincipal();
+            };
+        }
+
+        function intentarNuevaInspeccion() {
+            comprobarConfiguracionFecha(fechaActual, (configurada) => {
+                if (configurada) {
+                    mostrarFormulario();
+                } else {
+                    alert("⚠️ Debe configurar el equipo de trabajo antes de registrar inspecciones.");
+                    mostrarConfiguracion();
+                }
+            });
+        }
+
+        function mostrarFormulario(idEdit = null) {
+            document.getElementById("inspeccionForm").reset();
+            document.getElementById("editId").value = "";
+            document.getElementById("prevFrente").style.display = "none";
+            document.getElementById("prevFrente").src = "";
+            document.getElementById("prevRespaldo").style.display = "none";
+            document.getElementById("prevRespaldo").src = "";
+
+            actualizarDatalistCalles();
+
+            if (idEdit) {
+                document.getElementById("formTitle").innerText = "Editar Inspección";
+                document.getElementById("editId").value = idEdit;
+                
+                const transaction = db.transaction(["inspecciones"], "readonly");
+                const store = transaction.objectStore("inspecciones");
+                store.get(Number(idEdit)).onsuccess = e => {
+                    const r = e.target.result;
+                    if (r) {
+                        document.getElementById("txtCalle").value = r.calle;
+                        document.getElementById("txtEdificio").value = r.edificio;
+                        document.getElementById("txtCertificado").value = r.certificado;
+                        
+                        if (r.color === "Verde") document.getElementById("colVerde").checked = true;
+                        else if (r.color === "Amarillo" || r.color === "Yellow") document.getElementById("colAmarillo").checked = true;
+                        else if (r.color === "Rojo") document.getElementById("colRojo").checked = true;
+                        
+                        if (r.fotoFrente) {
+                            document.getElementById("prevFrente").src = r.fotoFrente;
+                            document.getElementById("prevFrente").style.display = "block";
+                        }
+                        if (r.fotoRespaldo) {
+                            document.getElementById("prevRespaldo").src = r.fotoRespaldo;
+                            document.getElementById("prevRespaldo").style.display = "block";
+                        }
+                    }
+                };
+            } else {
+                document.getElementById("formTitle").innerText = "Nueva Inspección";
+            }
+
+            document.getElementById("viewMain").classList.remove("active");
+            document.getElementById("viewForm").classList.add("active");
+        }
+
+        function regresarPrincipal() {
+            document.getElementById("viewForm").classList.remove("active");
+            document.getElementById("viewConfig").classList.remove("active");
+            document.getElementById("viewMain").classList.add("active");
+        }
+
+        function procesarImagen(input, idPreview) {
+            const file = input.files[0];
+            const preview = document.getElementById(idPreview);
+            
+            if (!file) {
+                preview.style.display = "none";
+                preview.src = "";
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.createElement("canvas");
+                    const MAX_WIDTH = 500; 
+                    const scaleSize = MAX_WIDTH / img.width;
+                    
+                    if (img.width > MAX_WIDTH) {
+                        canvas.width = MAX_WIDTH;
+                        canvas.height = img.height * scaleSize;
+                    } else {
+                        canvas.width = img.width;
+                        canvas.height = img.height;
+                    }
+
+                    const ctx = canvas.getContext("2d");
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                    const dataUrl = canvas.toDataURL("image/jpeg", 0.65);
+                    
+                    preview.src = dataUrl;
+                    preview.style.display = "block";
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function actualizarDatalistCalles() {
+            const datalist = document.getElementById("listaCallesSugeridas");
+            datalist.innerHTML = "";
+            callesExistentes.forEach(calle => {
+                const option = document.createElement("option");
+                option.value = calle;
+                datalist.appendChild(option);
+            });
+        }
+
+        function guardarFormulario(e) {
+            e.preventDefault();
+            const editId = document.getElementById("editId").value;
+            const calle = document.getElementById("txtCalle").value.trim();
+            const edificio = document.getElementById("txtEdificio").value.trim();
+            const certificado = document.getElementById("txtCertificado").value.trim();
+            const color = document.querySelector('input[name="colorEtiqueta"]:checked').value;
+            
+            const fotoFrente = document.getElementById("prevFrente").src.startsWith("data:") ? document.getElementById("prevFrente").src : null;
+            const fotoRespaldo = document.getElementById("prevRespaldo").src.startsWith("data:") ? document.getElementById("prevRespaldo").src : null;
+
+            const registro = {
+                fecha: fechaActual, 
+                calle,
+                edificio,
+                certificado,
+                color,
+                fotoFrente,
+                fotoRespaldo
+            };
+
+            const transaction = db.transaction(["inspecciones"], "readwrite");
+            const store = transaction.objectStore("inspecciones");
+
+            if (editId) {
+                registro.id = Number(editId);
+                store.put(registro).onsuccess = () => {
+                    mostrarToast("✅ Registro actualizado");
+                    regresarPrincipal();
+                    cargarTabla();
+                };
+            } else {
+                store.add(registro).onsuccess = () => {
+                    mostrarToast("✅ Registro guardado");
+                    regresarPrincipal();
+                    cargarTabla();
+                };
+            }
+        }
+
+        function cargarTabla() {
+            const tbody = document.getElementById("tablaCuerpo");
+            tbody.innerHTML = "";
+            callesExistentes.clear();
+
+            if (!db) return;
+
+            const transaction = db.transaction(["inspecciones"], "readonly");
+            const store = transaction.objectStore("inspecciones");
+            const requestCursor = store.openCursor();
+
+            requestCursor.onsuccess = function(event) {
+                const cursor = event.target.result;
+                if (cursor) {
+                    const r = cursor.value;
+                    if (r.calle) callesExistentes.add(r.calle.trim());
+
+                    if (r.fecha === fechaActual) {
+                        const tr = document.createElement("tr");
+                        tr.dataset.id = r.id;
+
+                        let badgeClass = "badge-verde";
+                        if (r.color === "Amarillo" || r.color === "Yellow") badgeClass = "badge-amarillo";
+                        else if (r.color === "Rojo") badgeClass = "badge-rojo";
+
+                        tr.innerHTML = `
+                            <td>${r.calle}</td>
+                            <td>${r.edificio}</td>
+                            <td><span class="badge ${badgeClass}">${r.color === 'Yellow' ? 'Amarillo' : r.color}</span></td>
+                            <td>${r.certificado}</td>
+                        `;
+                        vincularEventosFila(tr, r.id);
+                        tbody.appendChild(tr);
+                    }
+                    cursor.continue();
+                } else {
+                    actualizarDatalistCalles();
+                }
+            };
+        }
+
+        function vincularEventosFila(fila, id) {
+            const iniciarPresion = e => {
+                pressTimer = setTimeout(() => {
+                    e.preventDefault();
+                    lanzarMenuOpciones(id);
+                }, 800);
+            };
+            const cancelarPresion = () => clearTimeout(pressTimer);
+            const ejecutarClic = () => {
+                if (pressTimer) clearTimeout(pressTimer);
+                if (document.getElementById("modalMenu").style.display !== "flex") {
+                    verDetalleInspeccion(id);
+                }
+            };
+            fila.addEventListener("touchstart", iniciarPresion, { passive: true });
+            fila.addEventListener("touchend", ejecutarClic);
+            fila.addEventListener("touchmove", cancelarPresion, { passive: true });
+            fila.addEventListener("mousedown", iniciarPresion);
+            fila.addEventListener("mouseup", ejecutarClic);
+            fila.addEventListener("mouseleave", cancelarPresion);
+        }
+
+        function verDetalleInspeccion(id) {
+            const transaction = db.transaction(["inspecciones"], "readonly");
+            const store = transaction.objectStore("inspecciones");
+            store.get(id).onsuccess = e => {
+                const r = e.target.result;
+                if (!r) return;
+
+                document.getElementById("detTitle").innerText = `Detalle Inspección (ID ${r.id})`;
+                let badgeClass = r.color === "Verde" ? "badge-verde" : (r.color === "Amarillo" || r.color === "Yellow" ? "badge-amarillo" : "badge-rojo");
+
+                let htmlFotos = "";
+                if (r.fotoFrente || r.fotoRespaldo) {
+                    htmlFotos = `<p style="font-size:0.75rem; color:#666; text-align:center; margin-top:8px; margin-bottom: 2px;">🔍 Toca una imagen para verla en pantalla completa</p>`;
+                    htmlFotos += `<div class="detail-photos">`;
+                    if (r.fotoFrente) htmlFotos += `<div><strong>Frente:</strong><br><img src="${r.fotoFrente}" onclick="abrirZoom(this)"></div>`;
+                    if (r.fotoRespaldo) htmlFotos += `<div><strong>Respaldo:</strong><br><img src="${r.fotoRespaldo}" onclick="abrirZoom(this)"></div>`;
+                    htmlFotos += `</div>`;
+                }
+
+                document.getElementById("detBody").innerHTML = `
+                    <p><strong>Día:</strong> ${r.fecha}</p>
+                    <p><strong>Calle/Sector:</strong> ${r.calle}</p>
+                    <p><strong>Edificación:</strong> ${r.edificio}</p>
+                    <p><strong>📜:</strong> ${r.certificado}</p>
+                    <p><strong>Color:</strong> <span class="badge ${badgeClass}">${r.color === 'Yellow' ? 'Amarillo' : r.color}</span></p>
+                    ${htmlFotos}
+                `;
+                abrirModal("modalDetalles");
+            };
+        }
+
+        function abrirZoom(elementoImg) {
+            if (!elementoImg || !elementoImg.src) return;
+            const modal = document.getElementById("modalZoom");
+            const imgZoomed = document.getElementById("imgZoomed");
+            imgZoomed.src = elementoImg.src;
+            modal.style.display = "flex";
+        }
+
+        function cerrarZoom() { document.getElementById("modalZoom").style.display = "none"; }
+
+        function lanzarMenuOpciones(id) {
+            activeRecordId = id;
+            const transaction = db.transaction(["inspecciones"], "readonly");
+            const store = transaction.objectStore("inspecciones");
+            store.get(id).onsuccess = e => {
+                const r = e.target.result;
+                if (r) {
+                    document.getElementById("menuTargetText").innerText = `${r.calle} - ${r.edificio}`;
+                    document.getElementById("btnMenuEditar").onclick = () => {
+                        cerrarModal("modalMenu");
+                        mostrarFormulario(id);
+                    };
+                    document.getElementById("btnMenuEliminar").onclick = () => {
+                        cerrarModal("modalMenu");
+                        eliminarRegistro(id);
+                    };
+                    abrirModal("modalMenu");
+                }
+            };
+        }
+
+        function eliminarRegistro(id) {
+            if (confirm("¿Seguro que deseas eliminar este registro?")) {
+                const transaction = db.transaction(["inspecciones"], "readwrite");
+                const store = transaction.objectStore("inspecciones");
+                store.delete(id).onsuccess = () => {
+                    mostrarToast("🗑️ Registro eliminado");
+                    cargarTabla();
+                };
+            }
+        }
+
+        function compartirOEnviarReporte() {
+            const configTrans = db.transaction(["configuracion"], "readonly");
+            const configStore = configTrans.objectStore("configuracion");
+            
+            configStore.get(fechaActual).onsuccess = e => {
+                const config = e.target.result;
+                if (!config) {
+                    alert("⚠️ Primero debe configurar el equipo de trabajo para este día de trabajo.");
+                    return;
+                }
+
+                const insTrans = db.transaction(["inspecciones"], "readonly");
+                const insStore = insTrans.objectStore("inspecciones");
+                
+                insStore.getAll().onsuccess = event => {
+                    const registros = event.target.result.filter(r => r.fecha === fechaActual);
+                    if (registros.length === 0) {
+                        mostrarToast("⚠️ No hay inspecciones hoy.");
+                        return;
+                    }
+
+                    const callesData = {};
+                    let totalVerdes = 0, totalAmarillas = 0, totalRojas = 0;
+
+                    registros.forEach(r => {
+                        const calleNorm = r.calle.trim();
+                        if (!callesData[calleNorm]) callesData[calleNorm] = { inspecciones: [] };
+                        callesData[calleNorm].inspecciones.push(r);
+                        
+                        if (r.color === "Verde") totalVerdes++;
+                        else if (r.color === "Amarillo" || r.color === "Yellow") totalAmarillas++;
+                        else if (r.color === "Rojo") totalRojas++;
+                    });
+
+                    let rStr = `📝 *REPORTE DE INSPECCIONES*\n`;
+                    const partesFecha = fechaActual.split("-");
+                    const fechaFormateada = `${partesFecha[2]}/${partesFecha[1]}/${partesFecha[0]}`;
+                    
+                    rStr += `Fecha: ${fechaFormateada}\n`;
+                    rStr += `Grupo: ${config.grupo}\n`;
+                    rStr += `Parroquia: ${config.parroquia}\n`;
+                    rStr += `====================\n`;
+
+                    for (const calle in callesData) {
+                        rStr += `*${calle}*\n`;
+                        callesData[calle].inspecciones.forEach(ins => {
+                            let emoji = ins.color === "Verde" ? "🟢" : (ins.color === "Amarillo" || ins.color === "Yellow" ? "🟠" : "🔴");
+                            const certCompleto = ins.certificado ? ins.certificado.toString().trim() : "";
+                            const certReducido = certCompleto.length > 5 ? certCompleto.slice(-5) : certCompleto;
+                            
+                            rStr += `${emoji} ${ins.edificio} | 📜 *${certReducido}\n`;
+                        });
+                        rStr += `\n`;
+                    }
+
+                    rStr += `_Resumen: (${totalVerdes}🟢| ${totalAmarillas}🟠 | ${totalRojas}🔴)_\n\n`;
+                    rStr += `*TOTAL INSPECCIONES: ${registros.length}*\n`;
+                    rStr += `====================\n`;
+                    rStr += `Inspectores:\n`;
+                    rStr += config.inspectores.map(name => `${name}`).join("\n");
+
+                    if (navigator.share) {
+                        navigator.share({ title: `Reporte ${fechaFormateada}`, text: rStr })
+                        .then(() => mostrarToast("✅ Reporte Compartido"))
+                        .catch(err => console.log("Compartir cancelado:", err));
+                    } else {
+                        navigator.clipboard.writeText(rStr).then(() => {
+                            mostrarToast("✅ Reporte Copiado");
+                        }).catch(() => alert("Error al copiar automáticamente."));
+                    }
+                };
+            };
+        }        
+
+        function confirmarReiniciarDia() {
+            const hoy = new Date();
+            const year = hoy.getFullYear();
+            const month = String(hoy.getMonth() + 1).padStart(2, '0');
+            const day = String(hoy.getDate()).padStart(2, '0');
+            const hoyStr = `${year}-${month}-${day}`;
+
+            if (fechaActual === hoyStr) {
+                alert("Ya se encuentra trabajando en la fecha del día de hoy.");
+                return;
+            }
+
+            if (confirm(`¿Desea cambiar la fecha de trabajo al día de hoy (${day}/${month}/${year})?\nEsto le permitirá iniciar su nueva jornada manteniendo a salvo sus históricos.`)) {
+                fechaActual = hoyStr;
+                document.getElementById("filterDate").value = fechaActual;
+                comprobarConfiguracionFecha(fechaActual);
+                cargarTabla();
+                mostrarToast("🔄 Cambiado al día actual");
+            }
+        }
+
+        // ==========================================================
+        // EXPORTACIÓN ORIENTADA A EMAIL CON RESPALDO DE SEGURIDAD
+        // ==========================================================
+        function descargarJSONLocalmente(blob, nombre) {
+            const lnk = document.createElement("a");
+            lnk.download = nombre;
+            lnk.href = URL.createObjectURL(blob);
+            document.body.appendChild(lnk);
+            lnk.click();
+            document.body.removeChild(lnk);
+            mostrarToast("📥 Descargado. Adjúntalo en tu cliente de correo.");
+        }
+
+        // ==========================================================
+        // EXPORTACIÓN DIRECTA Y LIMPIA A ALMACENAMIENTO LOCAL (.JSON)
+        // ==========================================================
+        function descargarJSONLocalmente(blob, nombre) {
+            const lnk = document.createElement("a");
+            lnk.download = nombre;
+            lnk.href = URL.createObjectURL(blob);
+            document.body.appendChild(lnk);
+            lnk.click();
+            document.body.removeChild(lnk);
+            mostrarToast("📥 Archivo guardado en Descargas con éxito.");
+        }
+
+        function exportarDataJSONPorEmail() {
+            if (!db) return;
+            cerrarModal("modalSincronizacion");
+            
+            const exportData = { inspecciones: [], configuraciones: [] };
+            const tx = db.transaction(["inspecciones", "configuracion"], "readonly");
+            
+            tx.objectStore("inspecciones").getAll().onsuccess = e => { exportData.inspecciones = e.target.result; };
+            tx.objectStore("configuracion").getAll().onsuccess = e => { exportData.configuraciones = e.target.result; };
+
+            tx.oncomplete = () => {
+                const jsonString = JSON.stringify(exportData);
+                const blob = new Blob([jsonString], { type: "application/json" });
+                const nombreArchivo = `DATA_CUADRILLA_${fechaActual}.json`;
+
+                // Descarga local directa sin intermediarios ni consumo de memoria externa
+                descargarJSONLocalmente(blob, nombreArchivo);
+            };
+        }
+
+        function importarDataJSON(input) {
+            const file = input.files[0];
+            if (!file) return;
+            cerrarModal("modalSincronizacion");
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const dataImportada = JSON.parse(e.target.result);
+                    if (!dataImportada.inspecciones || !dataImportada.configuraciones) {
+                        alert("⚠️ El archivo seleccionado no tiene un formato válido para la cuadrilla.");
+                        input.value = "";
+                        return;
+                    }
+
+                    if (!confirm(`Se procesarán los registros del archivo del colega.\n¿Desea compaginarlos con su base de datos actual?`)) {
+                        input.value = "";
+                        return;
+                    }
+
+                    const tx = db.transaction(["inspecciones", "configuracion"], "readwrite");
+                    const storeIns = tx.objectStore("inspecciones");
+                    const storeCfg = tx.objectStore("configuracion");
+
+                    dataImportada.configuraciones.forEach(cfgColega => {
+                        storeCfg.get(cfgColega.fecha).onsuccess = evCfg => {
+                            const miCfgExistente = evCfg.target.result;
+                            if (miCfgExistente) {
+                                const nominaCombinada = [];
+                                const mapaAgregados = new Set();
+
+                                miCfgExistente.inspectores.forEach(n => {
+                                    const norm = n.trim().toLowerCase();
+                                    if (!mapaAgregados.has(norm)) {
+                                        nominaCombinada.push(n.trim());
+                                        mapaAgregados.add(norm);
+                                    }
+                                });
+
+                                cfgColega.inspectores.forEach(n => {
+                                    const norm = n.trim().toLowerCase();
+                                    if (!mapaAgregados.has(norm)) {
+                                        nominaCombinada.push(n.trim());
+                                        mapaAgregados.add(norm);
+                                    }
+                                });
+
+                                miCfgExistente.inspectores = nominaCombinada;
+                                storeCfg.put(miCfgExistente);
+                            } else {
+                                storeCfg.put(cfgColega);
+                            }
+                        };
+                    });
+
+                    storeIns.getAll().onsuccess = ev => {
+                        const existentes = ev.target.result;
+                        let agregados = 0;
+
+                        dataImportada.inspecciones.forEach(nueva => {
+                            const esDuplicado = existentes.some(ext => 
+                                ext.fecha === nueva.fecha &&
+                                ext.calle.trim().toLowerCase() === nueva.calle.trim().toLowerCase() &&
+                                ext.edificio.trim().toLowerCase() === nueva.edificio.trim().toLowerCase() &&
+                                ext.certificado.toString().trim() === nueva.certificado.toString().trim()
+                            );
+
+                            if (!esDuplicado) {
+                                delete nueva.id; 
+                                storeIns.add(nueva);
+                                agregados++;
+                            }
+                        });
+
+                        tx.oncomplete = () => {
+                            alert(`📊 Compaginación Completada:\n• Registros nuevos incorporados: ${agregados}\n• Duplicados omitidos de forma segura: ${dataImportada.inspecciones.length - agregados}\n\nLa nómina de inspectores del día también ha sido actualizada.`);
+                            input.value = "";
+                            comprobarConfiguracionFecha(fechaActual);
+                            cargarTabla();
+                        };
+                    };
+                } catch (err) {
+                    alert("❌ Error crítico leyendo el archivo JSON.");
+                    input.value = "";
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        function eliminarTodoElHistorialDB() {
+            if (confirm("⚠️ ALERTA EXTREMA:\n¿Está seguro de querer borrar permanentemente toda la Base de Datos?")) {
+                if (confirm("Por seguridad, confirme una última vez. ¿Desea proceder?")) {
+                    const trans1 = db.transaction(["inspecciones"], "readwrite").objectStore("inspecciones").clear();
+                    const trans2 = db.transaction(["configuracion"], "readwrite").objectStore("configuracion").clear();
+                    trans1.onsuccess = trans2.onsuccess = () => {
+                        alert("🧹 Base de Datos purgada por completo.");
+                        window.location.reload();
+                    };
+                }
+            }
+        }
+
+        function abrirModal(id) { document.getElementById(id).style.display = "flex"; }
+        function cerrarModal(id) { document.getElementById(id).style.display = "none"; }
+        function mostrarToast(msg) {
+            const toast = document.getElementById("toast");
+            toast.innerText = msg;
+            toast.style.opacity = "1";
+            setTimeout(() => toast.style.opacity = "0", 2500);
+        }
+    </script>
+</body>
+</html>
