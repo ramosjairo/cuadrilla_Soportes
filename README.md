@@ -1,6 +1,30 @@
 # 📊 Sistema de Inspecciones de Campo (PWA Offline) - GastosJairo
 
-Aplicación Web Progresiva (PWA) diseñada para la gestión, registro y control de inspecciones técnicas en campo. Este sistema está optimizado para operar en entornos de baja o nula conectividad a internet, garantizando la integridad de la recolección de datos en cualquier ubicación.
+Anclado en la eficiencia del trabajo técnico, este sistema es una Aplicación Web Progresiva (PWA) diseñada para la gestión, registro y control de inspecciones en el terreno. La aplicación está optimizada para operar en entornos de baja o nula conectividad a internet, garantizando la continuidad de la recolección de datos bajo cualquier circunstancia.
+
+---
+
+## 👤 Información del Creador y Licencia
+
+* **Desarrollador:** Ing. Jairo Ramos
+* **Ubicación:** Caracas, Venezuela
+* **Licencia:** **Software de Uso Libre**. Esta herramienta puede ser utilizada, compartida y distribuida libremente por cualquier cuadrilla, técnico o inspector que la requiera para agilizar sus labores diarias.
+
+---
+
+## 🔒 Privacidad y Almacenamiento 100% Local
+
+* **Cero Servidores:** Esta aplicación **no cuenta con bases de datos externas, servidores en la nube ni sistemas de rastreo**. 
+* **Control Total de tus Datos:** Toda la información registrada, las nóminas de inspectores y las fotografías capturadas se almacenan de forma cifrada y exclusiva dentro del dispositivo móvil del usuario mediante **IndexedDB**. 
+* **Intercambio Seguro:** Los datos solo salen del dispositivo cuando el usuario decide, de forma manual y consciente, exportar el archivo `.json` para compartirlo con un colega por correo electrónico.
+
+---
+
+## ⚠️ Descargo de Responsabilidad (Disclaimer)
+
+* **Herramienta Independiente:** Esta aplicación es un desarrollo personal e independiente creado con el único fin de facilitar y agilizar el trabajo manual de reporte en las cuadrillas de campo.
+* **Carácter No Institucional:** **No es una aplicación oficial, no está vinculada, patrocinada ni respaldada por ninguna institución pública, organismo del Estado o empresa privada.** Su uso es estrictamente a título personal por parte de los operadores de campo.
+* **Garantía y Responsabilidad:** El autor no se hace responsable por la pérdida de datos derivada del formateo del dispositivo, limpieza extrema del caché del navegador por parte del usuario, o el uso incorrecto de las funciones de importación/exportación. Corresponde al usuario resguardar sus reportes diariamente.
 
 ---
 
@@ -9,7 +33,7 @@ Aplicación Web Progresiva (PWA) diseñada para la gestión, registro y control 
 * **Funcionamiento 100% Offline:** Gracias a una estrategia de caché estructurada (*Cache First*) con Service Workers, la aplicación carga instantáneamente sin necesidad de datos móviles o Wi-Fi.
 * **Almacenamiento Local Robusto:** Utiliza la base de datos interna del navegador (**IndexedDB**) para almacenar el historial de inspecciones, parámetros de equipos y fotografías de respaldo de forma segura en el dispositivo.
 * **Compaginación de Datos Cuadrilla (Colegas):** Permite exportar e importar de manera discreta estructuras de datos en formato `.json` a través de correo electrónico, facilitando la unificación de nóminas e inspecciones entre compañeros de equipo sin depender de un servidor central.
-* **Reportes en Formato Limpio:** Generación automatizada de reportes estructurados listos para ser compartidos por canales de mensajería o portapapeles.
+* **Reportes en Formato Limpio:** Generación automatizada de reportes estructurados listos para ser compartidos por canales de mensería o portapapeles.
 * **Diseño Minimalista e Institucional:** Interfaz limpia adaptada a dispositivos móviles con una iconografía basada en nodos y estructuras de ingeniería.
 
 ---
@@ -19,7 +43,7 @@ Aplicación Web Progresiva (PWA) diseñada para la gestión, registro y control 
 ### 1. Configuración Inicial (Primer uso con Internet)
 1. Acceda al enlace de GitHub Pages de la aplicación desde el navegador de su teléfono móvil.
 2. Espere a que la barra superior indique **⚙️ Sin Configurar**.
-3. El navegador de su dispositivo le mostrará de forma automática la opción **"Añadir a la pantalla de inicio"** o **"Instalar aplicación"**. Acéptela para crear el acceso directo nativo.
+3. El navegador de su dispositivo le mostrará de forma automática la opción **"Añadir a la pantalla de inicio"** o **"Instalar aplicación"**. Acéptela para crear el acceso directo nativo con el logotipo geométrico de soporte.
 
 ### 2. Configuración del Equipo de Trabajo
 1. Presione el botón de configuración en la esquina superior derecha (**⚙️ Sin Configurar**).
@@ -43,7 +67,7 @@ Aplicación Web Progresiva (PWA) diseñada para la gestión, registro y control 
 1. Mantenga presionado el botón de grupo (**👥**) en la barra inferior por 1.5 segundos.
 2. Se desplegará el menú de datos de cuadrilla:
    * **Exportar data:** Descarga un archivo estructurado `.json` con todo el historial para ser enviado por correo electrónico.
-   * **Importar data:** Permite cargar el archivo `.json` enviado por un colega. El sistema comparará inteligentemente ambos archivos, añadirá los registros nuevos y omitirá los duplicados para evitar la corrupción de datos.
+   * **Importar data:** Permite cargar el archivo `.json` enviado por un colega. El sistema comparará inteligentemente ambos archivos, adelantará los registros nuevos y omitirá los duplicados para evitar la corrupción de datos.
 
 ---
 
