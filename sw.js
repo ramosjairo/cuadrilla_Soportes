@@ -1,10 +1,10 @@
-const CACHE_NAME = 'cuadrilla-cache-v1';
+const CACHE_NAME = 'cuadrilla-cache-v2';
 const ASSETS = [
-  '/cuadrilla_Soportes/',
-  '/cuadrilla_Soportes/index.html',
-  '/cuadrilla_Soportes/manifest.json',
-  '/cuadrilla_Soportes/icono-192.png',
-  '/cuadrilla_Soportes/icono-512.png'
+  './',
+  './index.html',
+  './manifest.json',
+  './icono-192.png',
+  './icono-512.png'
 ];
 
 // 1. Instalar el Service Worker y almacenar los archivos esenciales en la caché local
@@ -34,18 +34,20 @@ self.addEventListener('activate', (event) => {
 });
 
 // 3. Interceptar las peticiones: Estrategia Cache First (Priorizar Caché sobre Internet)
-// Si el archivo está en el teléfono, lo carga al instante sin usar datos ni internet.
 self.addEventListener('fetch', (event) => {
   event.respondWith(
-    caches.match(event.request).then((cachedResponse) => {
+    caches.match(event.request, { ignoreSearch: true }).then((cachedResponse) => {
       if (cachedResponse) {
         return cachedResponse; // Devuelve el archivo local inmediatamente
       }
       
-      // Si no está en caché (por ejemplo, una petición externa), intenta buscarlo en la red
+      // Si no está en caché, intenta buscarlo en la red
       return fetch(event.request).catch(() => {
-        // Fallback en caso de error total fuera de línea
-        console.log('El recurso solicitado no está disponible offline.');
+        // Fallback estricto fuera de línea: si es una petición de navegación/HTML, sirve index.html
+        if (event.request.mode === 'navigate' || event.request.headers.get('accept').includes('text/html')) {
+          return caches.match('./index.html');
+        }
+        console.log('El recurso solicitado no está disponible offline:', event.request.url);
       });
     })
   );

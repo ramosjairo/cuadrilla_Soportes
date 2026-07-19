@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inspecciones de Campo</title>
+    <link rel="manifest" href="./manifest.json">
+    <meta name="theme-color" content="#1e1e24">
+    <link rel="apple-touch-icon" href="./icono-192.png">
 
     <style>
         :root {
@@ -1447,6 +1450,15 @@
             toast.innerText = msg;
             toast.style.opacity = "1";
             setTimeout(() => toast.style.opacity = "0", 2500);
+        }
+
+        // Registro del Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js', { scope: './' })
+                    .then(reg => console.log('Service Worker registrado con éxito:', reg.scope))
+                    .catch(err => console.error('Error al registrar el Service Worker:', err));
+            });
         }
     </script>
 </body>
