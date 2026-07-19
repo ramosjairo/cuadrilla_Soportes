@@ -4,6 +4,17 @@ Anclado en la eficiencia del trabajo técnico, este sistema es una Aplicación W
 
 ---
 
+## 📲 Acceso e Instalación Inmediata
+
+Para abrir la aplicación o instalarla en la pantalla de inicio de tu teléfono, haz clic en el siguiente enlace oficial:
+
+### 🚀 [👉 HACER CLIC AQUÍ PARA ABRIR LA APLICACIÓN 👈](https://ramosjairo.github.io/cuadrilla_Soportes/)
+
+> ⚠️ **REQUISITO INDISPENSABLE PARA EL PRIMER INGRESO:**
+> El **primer acceso** al enlace se debe realizar obligatoriamente **CON CONEXIÓN A INTERNET** (ya sea por Datos Móviles o Wi-Fi). Esto es necesario para que el navegador descargue el Service Worker y guarde los archivos esenciales en la caché del teléfono. Una vez abierta e instalada la primera vez, la conexión puede apagarse por completo y la aplicación funcionará al 100% fuera de línea en el campo.
+
+---
+
 ## 👤 Información del Creador y Licencia
 
 * **Desarrollador:** Ing. Jairo Ramos
