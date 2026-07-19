@@ -1,10 +1,10 @@
 const CACHE_NAME = 'cuadrilla-cache-v1';
 const ASSETS = [
-  './',
-  './index.html',
-  './manifest.json',
-  './icono-192.png',
-  './icono-512.png'
+  '/cuadrilla_Soportes/',
+  '/cuadrilla_Soportes/index.html',
+  '/cuadrilla_Soportes/manifest.json',
+  '/cuadrilla_Soportes/icono-192.png',
+  '/cuadrilla_Soportes/icono-512.png'
 ];
 
 // 1. Instalar el Service Worker y almacenar los archivos esenciales en la caché local
