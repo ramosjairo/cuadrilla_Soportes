@@ -1,35 +1,52 @@
-const CACHE_NAME = 'cuadrilla-v1';
-const assets = [
+const CACHE_NAME = 'cuadrilla-cache-v1';
+const ASSETS = [
   './',
   './index.html',
-  './manifest.json'
+  './manifest.json',
+  './icono-192.png',
+  './icono-512.png'
 ];
 
-// Instalar el Service Worker
-self.addEventListener('install', event => {
+// 1. Instalar el Service Worker y almacenar los archivos esenciales en la caché local
+self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then(cache => {
-      return cache.addAll(assets);
-    })
+    caches.open(CACHE_NAME).then((cache) => {
+      console.log('Guardando archivos en caché local para uso offline...');
+      return cache.addAll(ASSETS);
+    }).then(() => self.skipWaiting())
   );
 });
 
-// Activar y limpiar cachés antiguas
-self.addEventListener('activate', event => {
+// 2. Activar el Service Worker y limpiar cachés antiguas si las hubiera
+self.addEventListener('activate', (event) => {
   event.waitUntil(
-    caches.keys().then(keys => {
+    caches.keys().then((keys) => {
       return Promise.all(
-        keys.filter(key => key !== CACHE_NAME).map(key => caches.delete(key))
+        keys.map((key) => {
+          if (key !== CACHE_NAME) {
+            console.log('Eliminando caché antigua:', key);
+            return caches.delete(key);
+          }
+        })
       );
-    })
+    }).then(() => self.clients.claim())
   );
 });
 
-// Responder desde la caché o ir a la red si no existe
-self.addEventListener('fetch', event => {
+// 3. Interceptar las peticiones: Estrategia Cache First (Priorizar Caché sobre Internet)
+// Si el archivo está en el teléfono, lo carga al instante sin usar datos ni internet.
+self.addEventListener('fetch', (event) => {
   event.respondWith(
-    caches.match(event.request).then(cachedResponse => {
-      return cachedResponse || fetch(event.request);
+    caches.match(event.request).then((cachedResponse) => {
+      if (cachedResponse) {
+        return cachedResponse; // Devuelve el archivo local inmediatamente
+      }
+      
+      // Si no está en caché (por ejemplo, una petición externa), intenta buscarlo en la red
+      return fetch(event.request).catch(() => {
+        // Fallback en caso de error total fuera de línea
+        console.log('El recurso solicitado no está disponible offline.');
+      });
     })
   );
 });
