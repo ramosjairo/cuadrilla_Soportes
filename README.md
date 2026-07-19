@@ -1,4 +1,4 @@
-# 📊 Sistema de Inspecciones de Campo (PWA Offline) - GastosJairo
+# 📊 Sistema de Inspecciones de Campo (PWA Offline) - Cuadrilla
 
 Anclado en la eficiencia del trabajo técnico, este sistema es una Aplicación Web Progresiva (PWA) diseñada para la gestión, registro y control de inspecciones en el terreno. La aplicación está optimizada para operar en entornos de baja o nula conectividad a internet, garantizando la continuidad de la recolección de datos bajo cualquier circunstancia.
 
