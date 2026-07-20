@@ -667,14 +667,25 @@
         <div class="modal-content" onclick="event.stopPropagation()">
             <div class="modal-header">📲 Datos de Cuadrilla (Colegas)</div>
             <div class="modal-body" style="display: flex; flex-direction: column; gap: 12px; padding-top: 10px;">
-                <p style="font-size: 0.85rem; color: #555; text-align: center;">Manejo seguro de archivos JSON vía Correo Electrónico.</p>
+                <p style="font-size: 0.85rem; color: #555; text-align: center;">Comparte la jornada actual vía WhatsApp o exporta todo el JSON localmente.</p>
                 
+                <!-- NUEVOS BOTONES WHATSAPP -->
+                <button class="btn btn-primary" style="width: 100%; font-size: 0.9rem; background-color: #25D366; border-color: #25D366; color: white;" onclick="exportarJornadaWhatsApp()">
+                    📤 Compartir Reporte Diario
+                </button>
+                
+                <button class="btn btn-secondary" style="width: 100%; font-size: 0.9rem; background-color: #f0f4f8; border: 1px dashed #25D366; color: #128C7E; font-weight: bold;" onclick="importarJornadaPortapapeles()">
+                    📥 Importar Reporte de Colega
+                </button>
+
+                <hr style="border: 0; height: 1px; background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0)); margin: 5px 0;">
+
                 <button class="btn btn-primary" style="width: 100%; font-size: 0.9rem;" onclick="exportarDataJSONPorEmail()">
                     📥 Exportar Mi Data (.json por Email)
                 </button>
                 
                 <button class="btn btn-secondary" style="width: 100%; font-size: 0.9rem; background-color: #f0f4f8; border: 1px dashed #b0c4de;" onclick="document.getElementById('fileImport').click()">
-                    📤 Importar Data de Colega
+                    📤 Importar Data (.json local)
                 </button>
                 <input type="file" id="fileImport" accept=".json" style="display:none;" onchange="importarDataJSON(this)">
             </div>
@@ -1339,6 +1350,92 @@
                 // Descarga local directa sin intermediarios ni consumo de memoria externa
                 descargarJSONLocalmente(blob, nombreArchivo);
             };
+        }
+
+        // ==========================================================
+        // SINCRONIZACIÓN OFFLINE POR WHATSAPP (PORTAPAPELES)
+        // ==========================================================
+        function exportarJornadaWhatsApp() {
+            if (!db) return;
+            cerrarModal("modalSincronizacion");
+            
+            const tx = db.transaction(["inspecciones", "configuracion"], "readonly");
+            let dataInspecciones = [];
+            let parametrosConfig = null;
+            
+            tx.objectStore("inspecciones").getAll().onsuccess = e => { dataInspecciones = e.target.result; };
+            tx.objectStore("configuracion").get(fechaActual).onsuccess = e => { parametrosConfig = e.target.result; };
+
+            tx.oncomplete = () => {
+                parametrosConfig = parametrosConfig || { grupo: "No registrado", inspectores: ["No registrado"] };
+                
+                const fecha = new Date().toLocaleDateString('es-VE');
+                const grupo = parametrosConfig.grupo || "No registrado";
+                const responsable = (parametrosConfig.inspectores && parametrosConfig.inspectores.length > 0) ? parametrosConfig.inspectores[0] : "No registrado";
+                
+                const jsonStr = JSON.stringify(dataInspecciones);
+                const base64Data = btoa(unescape(encodeURIComponent(jsonStr)));
+                
+                const mensajeTexto = `📊 *REPORTE DE INSPECCIÓN DE CAMPO*\n📅 *Fecha:* ${fecha}\n👥 *Grupo:* ${grupo}\n👤 *Responsable:* ${responsable}\n\n⚠️ _Para unificar estos datos en tu aplicación, deja presionado este mensaje, selecciónalo todo, dale a *Copiar* y abre la app._\n\nDATA_CUADRILLA_${base64Data}`;
+                
+                const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(mensajeTexto)}`;
+                window.open(whatsappUrl, '_blank');
+            };
+        }
+
+        async function importarJornadaPortapapeles() {
+            cerrarModal("modalSincronizacion");
+            try {
+                const text = await navigator.clipboard.readText();
+                if (!text.includes("DATA_CUADRILLA_")) {
+                    alert("⚠️ El texto en el portapapeles no contiene datos válidos de cuadrilla.");
+                    return;
+                }
+                
+                const bloqueCodificado = text.split("DATA_CUADRILLA_")[1].trim();
+                const jsonStr = decodeURIComponent(escape(atob(bloqueCodificado)));
+                const dataInspecciones = JSON.parse(jsonStr);
+                
+                if (!Array.isArray(dataInspecciones)) {
+                    alert("⚠️ Formato de datos corrupto.");
+                    return;
+                }
+
+                if (!confirm(`Se procesarán ${dataInspecciones.length} registros del portapapeles.\n¿Desea compaginarlos con su base de datos actual?`)) {
+                    return;
+                }
+
+                const tx = db.transaction(["inspecciones"], "readwrite");
+                const storeIns = tx.objectStore("inspecciones");
+                
+                storeIns.getAll().onsuccess = ev => {
+                    const existentes = ev.target.result;
+                    let agregados = 0;
+
+                    dataInspecciones.forEach(nueva => {
+                        const esDuplicado = existentes.some(ext => 
+                            ext.fecha === nueva.fecha &&
+                            ext.calle.trim().toLowerCase() === nueva.calle.trim().toLowerCase() &&
+                            ext.edificio.trim().toLowerCase() === nueva.edificio.trim().toLowerCase() &&
+                            ext.certificado.toString().trim() === nueva.certificado.toString().trim()
+                        );
+
+                        if (!esDuplicado) {
+                            delete nueva.id; 
+                            storeIns.add(nueva);
+                            agregados++;
+                        }
+                    });
+
+                    tx.oncomplete = () => {
+                        alert(`📊 Sincronización por WhatsApp Completada:\n• Registros nuevos incorporados: ${agregados}\n• Duplicados omitidos de forma segura: ${dataInspecciones.length - agregados}`);
+                        cargarTabla();
+                    };
+                };
+            } catch (err) {
+                console.error(err);
+                alert("❌ Error crítico leyendo el portapapeles. Asegúrate de haber dado permisos al navegador y de copiar el mensaje completo.");
+            }
         }
 
         function importarDataJSON(input) {
