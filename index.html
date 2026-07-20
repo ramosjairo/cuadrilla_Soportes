@@ -472,7 +472,7 @@
 </head>
 <body>
 
-    <datalist id="listaCallesSugeridas"></datalist>
+    <datalist id="listaCalles"></datalist>
 
     <div class="app-container">
         
@@ -539,7 +539,7 @@
                 
                 <div class="form-group">
                     <label for="txtCalle">Calle/Sector</label>
-                    <input type="text" id="txtCalle" list="listaCallesSugeridas" class="form-control" placeholder="Ej. Calle Real" required autocomplete="off">
+                    <input type="text" id="txtCalle" list="listaCalles" class="form-control" placeholder="Ej. Calle Real" required autocomplete="off">
                 </div>
 
                 <div class="form-group">
@@ -1026,7 +1026,7 @@
         }
 
         function actualizarDatalistCalles() {
-            const datalist = document.getElementById("listaCallesSugeridas");
+            const datalist = document.getElementById("listaCalles");
             datalist.innerHTML = "";
             callesExistentes.forEach(calle => {
                 const option = document.createElement("option");
@@ -1041,7 +1041,20 @@
             const calle = document.getElementById("txtCalle").value.trim();
             const edificio = document.getElementById("txtEdificio").value.trim();
             const certificado = document.getElementById("txtCertificado").value.trim();
-            const color = document.querySelector('input[name="colorEtiqueta"]:checked').value;
+            
+            // 2. VALIDACIÓN DEL CERTIFICADO (Solo dígitos)
+            if (!/^\d+$/.test(certificado)) {
+                alert("❌ El Nro. de Certificado debe contener únicamente dígitos numéricos sin espacios ni letras.");
+                return;
+            }
+
+            // 4. VALIDACIÓN DE COLOR DE ETIQUETA
+            const colorElement = document.querySelector('input[name="colorEtiqueta"]:checked');
+            if (!colorElement) {
+                alert("❌ Debe seleccionar un color de etiqueta para continuar");
+                return;
+            }
+            const color = colorElement.value;
             
             const fotoFrente = document.getElementById("prevFrente").src.startsWith("data:") ? document.getElementById("prevFrente").src : null;
             const fotoRespaldo = document.getElementById("prevRespaldo").src.startsWith("data:") ? document.getElementById("prevRespaldo").src : null;
@@ -1558,5 +1571,10 @@
             });
         }
     </script>
+    
+    <!-- 1. PIE DE PÁGINA COMPACTO -->
+    <footer style="text-align: center; margin-bottom: 10px; font-size: 0.75rem; font-weight: 500; color: #4a5568; opacity: 0.8;">
+        Desarrollado por: Ing. Jairo Ramos
+    </footer>
 </body>
 </html>
