@@ -480,7 +480,8 @@
         <div id="viewMain" class="view active">
             <div class="header">
                 <div class="header-title">
-                    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+                    <!-- [MODIFICACIÓN] 1: Ícono SVG reemplazado por la imagen logo.png asegurando las mismas dimensiones -->
+                    <img src="logo.png" alt="Logo" style="height: 24px; width: auto; object-fit: contain;">
                     <h2>Inspecciones</h2>
                 </div>
                 <div id="configStatus" class="status-config status-empty" onclick="mostrarConfiguracion()">
@@ -515,6 +516,11 @@
                     </thead>
                     <tbody id="tablaCuerpo"></tbody>
                 </table>
+            </div>
+
+            <!-- [MODIFICACIÓN] 2: Resumen compacto de inspecciones del día -->
+            <div id="resumenInspecciones" style="text-align: right; font-size: 0.85rem; font-weight: 600; color: #555; margin-top: 5px; padding-right: 10px;">
+                Resumen: (0🟢 | 0🟡 | 0🔴)
             </div>
 
             <!-- BARRA DE ACCIONES INFERIOR REESTRUCTURADA -->
@@ -567,9 +573,11 @@
 
                 <div class="form-group">
                     <label for="txtCertificado">Nro. Certificado</label>
-                    <input type="text" id="txtCertificado" class="form-control" placeholder="Ej. 92110" required autocomplete="off">
+                    <!-- [MODIFICACIÓN] 3. OPTIMIZACIÓN UX MÓVIL: Atributos inputmode y pattern para mostrar teclado numérico directamente -->
+                    <input type="text" id="txtCertificado" class="form-control" placeholder="Ej. 92110" required autocomplete="off" inputmode="numeric" pattern="[0-9]*">
                 </div>
 
+                <!-- [MODIFICACIÓN] 1. FOTO FRENTE: accept="image/*" asegura que en móviles se despliegue el menú nativo (Cámara o Galería) sin forzar un solo método. -->
                 <div class="form-group">
                     <label>Foto del Frente</label>
                     <div class="photo-uploader" onclick="document.getElementById('fileFrente').click()">
@@ -579,6 +587,7 @@
                     </div>
                 </div>
 
+                <!-- [MODIFICACIÓN] 1. FOTO RESPALDO: misma configuración limpia para permitir ambas opciones nativas. -->
                 <div class="form-group">
                     <label>Foto de Respaldo</label>
                     <div class="photo-uploader" onclick="document.getElementById('fileRespaldo').click()">
@@ -602,14 +611,21 @@
             </div>
             
             <form id="configForm" onsubmit="guardarConfiguracion(event)">
+                <!-- [MODIFICACIÓN] 1. REORDENAMIENTO: Parroquia primero -->
+                <div class="form-group">
+                    <label for="cfgParroquia">Parroquia</label>
+                    <input type="text" id="cfgParroquia" class="form-control" placeholder="Ej. El Recreo" required autocomplete="off">
+                </div>
+
                 <div class="form-group">
                     <label for="cfgGrupo">Grupo</label>
                     <input type="text" id="cfgGrupo" class="form-control" placeholder="Ej. Grupo Central" required autocomplete="off">
                 </div>
 
+                <!-- [MODIFICACIÓN] 1. REORDENAMIENTO: Coordinador -->
                 <div class="form-group">
-                    <label for="cfgParroquia">Parroquia</label>
-                    <input type="text" id="cfgParroquia" class="form-control" placeholder="Ej. El Recreo" required autocomplete="off">
+                    <label for="cfgCoordinador">Coordinador</label>
+                    <input type="text" id="cfgCoordinador" class="form-control" placeholder="Nombre del Coordinador" required autocomplete="off">
                 </div>
 
                 <div class="form-group">
@@ -619,6 +635,14 @@
                         <button type="button" class="btn btn-primary" style="padding: 0 16px; font-size:1.2rem;" onclick="agregarInspectorNavegacion()">+</button>
                     </div>
                     <div class="inspector-badge-list" id="lstInspectores"></div>
+                </div>
+
+                <!-- [MODIFICACIÓN] 2. REUBICACIÓN SELECTOR CON SEPARADOR -->
+                <div style="margin-top: 20px; padding-top: 15px; border-top: 1px solid #eee;">
+                    <div class="form-group" style="display: flex; align-items: center; gap: 8px; margin-bottom: 0;">
+                        <input type="checkbox" id="cfgMostrarCertificado" style="width: 18px; height: 18px; cursor: pointer;">
+                        <label for="cfgMostrarCertificado" style="margin-bottom: 0; cursor: pointer; font-weight: 600; font-size: 0.85rem;">Incluir Certificado en Reporte</label>
+                    </div>
                 </div>
 
                 <div style="display: flex; gap: 10px; margin-top: 15px;">
@@ -701,6 +725,21 @@
         <img class="modal-zoom-contenido" id="imgZoomed" alt="Inspección Ampliada">
     </div>
 
+    <!-- [MODIFICACIÓN] 2: Modal de Novedades (Changelog) -->
+    <div id="modalNovedades" class="modal" onclick="cerrarModal('modalNovedades')">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div class="modal-header" id="novedadesTitle">🚀 ¡Novedades!</div>
+            <div class="modal-body" style="display: flex; flex-direction: column; gap: 10px;">
+                <ul id="novedadesList" style="padding-left: 20px; margin: 0; font-size: 0.9rem; color: #333; line-height: 1.4;">
+                    <!-- Se inyectan dinámicamente vía fetch(novedades.json) -->
+                </ul>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" onclick="cerrarModal('modalNovedades')" style="width: 100%;">¡Entendido, a trabajar!</button>
+            </div>
+        </div>
+    </div>
+
     <div id="toast" class="toast"></div>
 
     <script>
@@ -710,11 +749,43 @@
 
         const request = indexedDB.open(DB_NAME, DB_VERSION);
         request.onerror = e => console.error("Error DB:", e);
+        // [MODIFICACIÓN] 2: Función asíncrona para detección de novedades externas
+        async function verificarNovedades() {
+            try {
+                const response = await fetch('novedades.json');
+                if (!response.ok) return;
+                
+                const data = await response.json();
+                const lastVersion = localStorage.getItem('last_version_seen');
+                
+                if (lastVersion !== data.version) {
+                    document.getElementById('novedadesTitle').innerText = data.titulo;
+                    
+                    const ul = document.getElementById('novedadesList');
+                    ul.innerHTML = ""; // Limpiamos contenedor
+                    
+                    data.cambios.forEach(cambio => {
+                        const li = document.createElement('li');
+                        li.style.marginBottom = "8px";
+                        // Resaltamos en negrita el título del cambio antes de los dos puntos
+                        li.innerHTML = cambio.replace(/^(.*?):/, '<b>$1:</b>');
+                        ul.appendChild(li);
+                    });
+                    
+                    localStorage.setItem('last_version_seen', data.version);
+                    abrirModal("modalNovedades");
+                }
+            } catch (err) {
+                console.log("No se pudo obtener el historial de novedades:", err);
+            }
+        }
+
         request.onsuccess = e => {
             db = e.target.result;
             inicializarFechaHoy();
             cargarTabla();
             vincularEventosBotonCuadrilla();
+            verificarNovedades(); // Comprobar novedades externas al arrancar
         };
 
         request.onupgradeneeded = e => {
@@ -784,11 +855,15 @@
                 const cursor = e.target.result;
                 if (cursor) {
                     const ultimaConfig = cursor.value;
+                    // [MODIFICACIÓN] 2 y 3: Migramos coordinador y mostrarCertificado al buscar historial
                     const nuevaConfig = {
                         fecha: fechaDestino,
                         grupo: ultimaConfig.grupo,
+                        coordinador: ultimaConfig.coordinador || "",
                         parroquia: ultimaConfig.parroquia,
-                        inspectores: ultimaConfig.inspectores
+                        inspectores: ultimaConfig.inspectores,
+                        // [MODIFICACIÓN] 1: Por defecto activo (true) al heredar historial
+                        mostrarCertificado: ultimaConfig.mostrarCertificado !== undefined ? ultimaConfig.mostrarCertificado : true
                     };
 
                     const writeTrans = db.transaction(["configuracion"], "readwrite");
@@ -888,10 +963,17 @@
                 const config = e.target.result;
                 if (config) {
                     document.getElementById("cfgGrupo").value = config.grupo;
+                    // [MODIFICACIÓN] 2: Cargar coordinador en la UI
+                    document.getElementById("cfgCoordinador").value = config.coordinador || "";
                     document.getElementById("cfgParroquia").value = config.parroquia;
+                    // [MODIFICACIÓN] 1: Cargar estado del checkbox (Activo por defecto)
+                    document.getElementById("cfgMostrarCertificado").checked = config.mostrarCertificado !== undefined ? config.mostrarCertificado : true;
+                    
                     inspectoresActuales = config.inspectores || [];
                 } else {
                     inspectoresActuales = [];
+                    // [MODIFICACIÓN] 1: Activar por defecto si es una configuración nueva
+                    document.getElementById("cfgMostrarCertificado").checked = true;
                 }
                 renderizarListaInspectores();
             };
@@ -902,7 +984,11 @@
         function guardarConfiguracion(e) {
             e.preventDefault();
             const grupo = document.getElementById("cfgGrupo").value.trim();
+            // [MODIFICACIÓN] 2: Capturar coordinador desde el formulario
+            const coordinador = document.getElementById("cfgCoordinador").value.trim();
             const parroquia = document.getElementById("cfgParroquia").value.trim();
+            // [MODIFICACIÓN] 3: Capturar valor del checkbox
+            const mostrarCertificado = document.getElementById("cfgMostrarCertificado").checked;
 
             if (inspectoresActuales.length === 0) {
                 alert("⚠️ Debe agregar al menos un inspector al equipo de trabajo.");
@@ -912,8 +998,10 @@
             const configObject = {
                 fecha: fechaActual,
                 grupo,
+                coordinador, // [MODIFICACIÓN] 2: Guardado en IndexedDB
                 parroquia,
-                inspectores: inspectoresActuales
+                inspectores: inspectoresActuales,
+                mostrarCertificado // [MODIFICACIÓN] 3: Guardado en IndexedDB
             };
 
             const transaction = db.transaction(["configuracion"], "readwrite");
@@ -987,6 +1075,8 @@
             document.getElementById("viewMain").classList.add("active");
         }
 
+        // [MODIFICACIÓN] 1. LÓGICA DE COMPRESIÓN DE IMAGEN: Se mantiene fluida sin librerías externas.
+        // Convierte el archivo (sea cámara o galería) en Base64 mediante Canvas de forma nativa.
         function procesarImagen(input, idPreview) {
             const file = input.files[0];
             const preview = document.getElementById(idPreview);
@@ -1098,6 +1188,8 @@
             const transaction = db.transaction(["inspecciones"], "readonly");
             const store = transaction.objectStore("inspecciones");
             const requestCursor = store.openCursor();
+            // [MODIFICACIÓN] 2: Inicializar contadores para resumen
+            let totalVerde = 0, totalAmarillo = 0, totalRojo = 0;
 
             requestCursor.onsuccess = function(event) {
                 const cursor = event.target.result;
@@ -1110,14 +1202,28 @@
                         tr.dataset.id = r.id;
 
                         let badgeClass = "badge-verde";
-                        if (r.color === "Amarillo" || r.color === "Yellow") badgeClass = "badge-amarillo";
-                        else if (r.color === "Rojo") badgeClass = "badge-rojo";
+                        if (r.color === "Amarillo" || r.color === "Yellow") {
+                            badgeClass = "badge-amarillo";
+                            totalAmarillo++;
+                        } else if (r.color === "Rojo") {
+                            badgeClass = "badge-rojo";
+                            totalRojo++;
+                        } else {
+                            totalVerde++; // Asumimos verde por defecto
+                        }
+
+                        // [MODIFICACIÓN] 1: Formato de certificado en el listado
+                        let certDisplay = "-";
+                        if (r.certificado && r.certificado.toString().trim() !== "") {
+                            const certStr = r.certificado.toString().trim();
+                            certDisplay = certStr.length > 5 ? certStr.slice(0, 5) + "*" : certStr + "*";
+                        }
 
                         tr.innerHTML = `
                             <td>${r.calle}</td>
                             <td>${r.edificio}</td>
                             <td><span class="badge ${badgeClass}">${r.color === 'Yellow' ? 'Amarillo' : r.color}</span></td>
-                            <td>${r.certificado}</td>
+                            <td>${certDisplay}</td>
                         `;
                         vincularEventosFila(tr, r.id);
                         tbody.appendChild(tr);
@@ -1125,6 +1231,11 @@
                     cursor.continue();
                 } else {
                     actualizarDatalistCalles();
+                    // [MODIFICACIÓN] 2: Actualizar el elemento de UI al terminar de leer
+                    const resumenUI = document.getElementById("resumenInspecciones");
+                    if (resumenUI) {
+                        resumenUI.innerText = `Resumen: (${totalVerde}🟢 | ${totalAmarillo}🟡 | ${totalRojo}🔴)`;
+                    }
                 }
             };
         }
@@ -1271,10 +1382,16 @@
                         rStr += `*${calle}*\n`;
                         callesData[calle].inspecciones.forEach(ins => {
                             let emoji = ins.color === "Verde" ? "🟢" : (ins.color === "Amarillo" || ins.color === "Yellow" ? "🟠" : "🔴");
-                            const certCompleto = ins.certificado ? ins.certificado.toString().trim() : "";
-                            const certReducido = certCompleto.length > 5 ? certCompleto.slice(-5) : certCompleto;
                             
-                            rStr += `${emoji} ${ins.edificio} | 📜 *${certReducido}\n`;
+                            let certStr = "";
+                            // [MODIFICACIÓN] 2: Formato del certificado (primeros 5 dígitos + *) o su omisión si está inactivo
+                            if (config.mostrarCertificado !== false && ins.certificado) {
+                                const certCompleto = ins.certificado.toString().trim();
+                                const certReducido = certCompleto.length > 5 ? certCompleto.slice(0, 5) + "*" : certCompleto + "*";
+                                certStr = ` | 📜 *${certReducido}*`;
+                            }
+                            
+                            rStr += `${emoji} ${ins.edificio}${certStr}\n`;
                         });
                         rStr += `\n`;
                     }
@@ -1282,8 +1399,11 @@
                     rStr += `_Resumen: (${totalVerdes}🟢| ${totalAmarillas}🟠 | ${totalRojas}🔴)_\n\n`;
                     rStr += `*TOTAL INSPECCIONES: ${registros.length}*\n`;
                     rStr += `====================\n`;
+                    // [MODIFICACIÓN] 3: Estructura y orden del pie del reporte
+                    rStr += `Coordinador de brigada:\n`;
+                    rStr += `[${config.coordinador || 'No especificado'}]\n\n`;
                     rStr += `Inspectores:\n`;
-                    rStr += config.inspectores.map(name => `${name}`).join("\n");
+                    rStr += config.inspectores.map(name => `[${name}]`).join("\n");
 
                     if (navigator.share) {
                         navigator.share({ title: `Reporte ${fechaFormateada}`, text: rStr })
