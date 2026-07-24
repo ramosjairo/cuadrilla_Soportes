@@ -1,12 +1,12 @@
 {
-  "version": "v5.0",
-  "titulo": "🚀 ¡Nueva Versión Instalada (v5.0)!",
+  "version": "v5.1",
+  "titulo": "🚀 ¡Nueva Versión Instalada (v5.1)!",
   "fecha": "2026-07-23",
   "cambios": [
-    "📸 Captura de Fotos Mejorada: Posibilidad de tomar la foto directamente con la cámara o seleccionar desde la galería.",
-    "👔 Gestión de Coordinador: Nuevo campo para registrar al Coordinador de brigada en la configuración y reportes.",
-    "📜 Control de Certificados: Opción para activar/desactivar la inclusión del certificado en los reportes (mostrando solo los primeros 5 dígitos).",
-    "📊 Resumen Diario de Inspecciones: Visualización directa en pantalla con el conteo de etiquetas (🟢, 🟡, 🔴).",
-    "⌨️ Teclado Numérico Directo: Optimización para agilizar la entrada de datos en certificados y números."
+    "📸 Mejoras en la captura de fotos: Opción cámara/galería y confirmación visual en rojo para asegurar su carga.",
+    "📊 Corrección de visibilidad: El resumen de contadores por color al pie de la tabla ahora es completamente visible y funcional.",
+    "📝 Formato de reporte más limpio: Se eliminaron los corchetes en los nombres del coordinador y de los inspectores en WhatsApp.",
+    "👔 Gestión de Coordinador: Campo para registrar al Coordinador de brigada en la configuración y reportes.",
+    "📜 Control de Certificados: Opción para activar/desactivar la inclusión del certificado en los reportes."
   ]
 }

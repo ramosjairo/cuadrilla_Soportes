@@ -1,11 +1,13 @@
-// [MODIFICACIÓN] 1: Incremento de versión a v5 para refrescar la caché y limpiar automáticamente
-const CACHE_NAME = 'cuadrilla-cache-v5';
+// [MODIFICACIÓN] 1: Incremento de versión a v5.1 para refrescar la caché y limpiar automáticamente
+const CACHE_NAME = 'cuadrilla-cache-v5.1';
 const ASSETS = [
   './',
   './index.html',
   './manifest.json',
   './icono-192.png',
-  './icono-512.png'
+  './icono-512.png',
+  './logo.png',
+  './novedades.json'
 ];
 
 // 1. Instalar el Service Worker y almacenar los archivos esenciales en la caché local

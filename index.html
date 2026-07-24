@@ -125,7 +125,7 @@
             border: 1px solid #ddd;
             border-radius: 6px;
             background: #fff;
-            margin-bottom: 65px;
+            margin-bottom: 5px;
         }
 
         table {
@@ -292,10 +292,25 @@
             text-align: center;
             cursor: pointer;
             background: #fafafa;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .photo-uploader.photo-loaded {
+            border-color: #d32f2f;
+            background-color: #ffebee;
         }
 
         .photo-uploader input[type="file"] {
-            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+            z-index: 10;
         }
 
         .preview-img {
@@ -518,8 +533,8 @@
                 </table>
             </div>
 
-            <!-- [MODIFICACIÓN] 2: Resumen compacto de inspecciones del día -->
-            <div id="resumenContadores" style="text-align: right; font-size: 0.85rem; font-weight: 600; color: #555; margin-top: 5px; padding-right: 10px;">
+            <!-- Resumen compacto de inspecciones del día -->
+            <div id="resumenContadores" style="text-align: right; font-size: 0.85rem; font-weight: bold; margin-bottom: 60px; padding-right: 10px;">
                 Resumen: (0🟢 | 0🟡 | 0🔴)
             </div>
 
@@ -577,22 +592,20 @@
                     <input type="text" id="txtCertificado" class="form-control" placeholder="Ej. 92110" required autocomplete="off" inputmode="numeric" pattern="[0-9]*">
                 </div>
 
-                <!-- [MODIFICACIÓN] 1. FOTO FRENTE: accept="image/*" asegura que en móviles se despliegue el menú nativo (Cámara o Galería) sin forzar un solo método. -->
                 <div class="form-group">
                     <label>Foto del Frente</label>
-                    <div class="photo-uploader" onclick="document.getElementById('fileFrente').click()">
+                    <div class="photo-uploader">
                         <span>📸 Capturar/Elegir Frente</span>
-                        <input type="file" id="fileFrente" accept="image/*" capture="environment" onchange="procesarImagen(this, 'prevFrente')">
+                        <input type="file" id="fileFrente" accept="image/*" onchange="procesarImagen(this, 'prevFrente')">
                         <img id="prevFrente" class="preview-img" alt="Frente">
                     </div>
                 </div>
 
-                <!-- [MODIFICACIÓN] 1. FOTO RESPALDO: misma configuración limpia para permitir ambas opciones nativas. -->
                 <div class="form-group">
                     <label>Foto de Respaldo</label>
-                    <div class="photo-uploader" onclick="document.getElementById('fileRespaldo').click()">
+                    <div class="photo-uploader">
                         <span>📸 Capturar/Elegir Respaldo</span>
-                        <input type="file" id="fileRespaldo" accept="image/*" capture="environment" onchange="procesarImagen(this, 'prevRespaldo')">
+                        <input type="file" id="fileRespaldo" accept="image/*" onchange="procesarImagen(this, 'prevRespaldo')">
                         <img id="prevRespaldo" class="preview-img" alt="Respaldo">
                     </div>
                 </div>
@@ -1029,8 +1042,11 @@
             document.getElementById("editId").value = "";
             document.getElementById("prevFrente").style.display = "none";
             document.getElementById("prevFrente").src = "";
+            document.getElementById("prevFrente").closest('.photo-uploader').classList.remove('photo-loaded');
+            
             document.getElementById("prevRespaldo").style.display = "none";
             document.getElementById("prevRespaldo").src = "";
+            document.getElementById("prevRespaldo").closest('.photo-uploader').classList.remove('photo-loaded');
 
             actualizarDatalistCalles();
 
@@ -1054,10 +1070,12 @@
                         if (r.fotoFrente) {
                             document.getElementById("prevFrente").src = r.fotoFrente;
                             document.getElementById("prevFrente").style.display = "block";
+                            document.getElementById("prevFrente").closest('.photo-uploader').classList.add('photo-loaded');
                         }
                         if (r.fotoRespaldo) {
                             document.getElementById("prevRespaldo").src = r.fotoRespaldo;
                             document.getElementById("prevRespaldo").style.display = "block";
+                            document.getElementById("prevRespaldo").closest('.photo-uploader').classList.add('photo-loaded');
                         }
                     }
                 };
@@ -1080,10 +1098,12 @@
         function procesarImagen(input, idPreview) {
             const file = input.files[0];
             const preview = document.getElementById(idPreview);
+            const uploaderDiv = input.closest('.photo-uploader');
             
             if (!file) {
                 preview.style.display = "none";
                 preview.src = "";
+                if (uploaderDiv) uploaderDiv.classList.remove('photo-loaded');
                 return;
             }
 
@@ -1109,6 +1129,7 @@
                     
                     preview.src = dataUrl;
                     preview.style.display = "block";
+                    if (uploaderDiv) uploaderDiv.classList.add('photo-loaded');
                 };
                 img.src = e.target.result;
             };
@@ -1188,8 +1209,8 @@
             const transaction = db.transaction(["inspecciones"], "readonly");
             const store = transaction.objectStore("inspecciones");
             const requestCursor = store.openCursor();
-            // [MODIFICACIÓN] 2: Inicializar contadores para resumen
-            let totalVerde = 0, totalAmarillo = 0, totalRojo = 0;
+            
+            let inspeccionesDelDia = [];
 
             requestCursor.onsuccess = function(event) {
                 const cursor = event.target.result;
@@ -1198,21 +1219,17 @@
                     if (r.calle) callesExistentes.add(r.calle.trim());
 
                     if (r.fecha === fechaActual) {
+                        inspeccionesDelDia.push(r);
                         const tr = document.createElement("tr");
                         tr.dataset.id = r.id;
 
                         let badgeClass = "badge-verde";
                         if (r.color === "Amarillo" || r.color === "Yellow") {
                             badgeClass = "badge-amarillo";
-                            totalAmarillo++;
                         } else if (r.color === "Rojo") {
                             badgeClass = "badge-rojo";
-                            totalRojo++;
-                        } else {
-                            totalVerde++; // Asumimos verde por defecto
                         }
 
-                        // [MODIFICACIÓN] 1: Formato de certificado en el listado
                         let certDisplay = "-";
                         if (r.certificado && r.certificado.toString().trim() !== "") {
                             const certStr = r.certificado.toString().trim();
@@ -1231,10 +1248,19 @@
                     cursor.continue();
                 } else {
                     actualizarDatalistCalles();
-                    // [MODIFICACIÓN] 2: Actualizar el elemento de UI al terminar de leer
-                    const resumenUI = document.getElementById("resumenContadores");
-                    if (resumenUI) {
-                        resumenUI.innerText = `Resumen: (${totalVerde}🟢 | ${totalAmarillo}🟡 | ${totalRojo}🔴)`;
+                    
+                    let v = 0, a = 0, r = 0;
+                    // Recorrer las inspecciones filtradas del día activo:
+                    inspeccionesDelDia.forEach(i => {
+                        if (i.color === 'Verde' || i.color === 'verde') v++;
+                        if (i.color === 'Amarillo' || i.color === 'amarillo' || i.color === 'Yellow') a++;
+                        if (i.color === 'Rojo' || i.color === 'rojo') r++;
+                    });
+                    
+                    // Inyectar el texto directamente en el DOM:
+                    const elResumen = document.getElementById('resumenContadores');
+                    if (elResumen) {
+                        elResumen.innerHTML = `Resumen: (${v}🟢 | ${a}🟡 | ${r}🔴)`;
                     }
                 }
             };
@@ -1401,9 +1427,9 @@
                     rStr += `====================\n`;
                     // [MODIFICACIÓN] 3: Estructura y orden del pie del reporte
                     rStr += `Coordinador de brigada:\n`;
-                    rStr += `[${config.coordinador || 'No especificado'}]\n\n`;
+                    rStr += `${config.coordinador || 'No especificado'}\n\n`;
                     rStr += `Inspectores:\n`;
-                    rStr += config.inspectores.map(name => `[${name}]`).join("\n");
+                    rStr += config.inspectores.map(name => `${name}`).join("\n");
 
                     if (navigator.share) {
                         navigator.share({ title: `Reporte ${fechaFormateada}`, text: rStr })
