@@ -519,7 +519,7 @@
             </div>
 
             <!-- [MODIFICACIÓN] 2: Resumen compacto de inspecciones del día -->
-            <div id="resumenInspecciones" style="text-align: right; font-size: 0.85rem; font-weight: 600; color: #555; margin-top: 5px; padding-right: 10px;">
+            <div id="resumenContadores" style="text-align: right; font-size: 0.85rem; font-weight: 600; color: #555; margin-top: 5px; padding-right: 10px;">
                 Resumen: (0🟢 | 0🟡 | 0🔴)
             </div>
 
@@ -582,7 +582,7 @@
                     <label>Foto del Frente</label>
                     <div class="photo-uploader" onclick="document.getElementById('fileFrente').click()">
                         <span>📸 Capturar/Elegir Frente</span>
-                        <input type="file" id="fileFrente" accept="image/*" onchange="procesarImagen(this, 'prevFrente')">
+                        <input type="file" id="fileFrente" accept="image/*" capture="environment" onchange="procesarImagen(this, 'prevFrente')">
                         <img id="prevFrente" class="preview-img" alt="Frente">
                     </div>
                 </div>
@@ -592,7 +592,7 @@
                     <label>Foto de Respaldo</label>
                     <div class="photo-uploader" onclick="document.getElementById('fileRespaldo').click()">
                         <span>📸 Capturar/Elegir Respaldo</span>
-                        <input type="file" id="fileRespaldo" accept="image/*" onchange="procesarImagen(this, 'prevRespaldo')">
+                        <input type="file" id="fileRespaldo" accept="image/*" capture="environment" onchange="procesarImagen(this, 'prevRespaldo')">
                         <img id="prevRespaldo" class="preview-img" alt="Respaldo">
                     </div>
                 </div>
@@ -1232,7 +1232,7 @@
                 } else {
                     actualizarDatalistCalles();
                     // [MODIFICACIÓN] 2: Actualizar el elemento de UI al terminar de leer
-                    const resumenUI = document.getElementById("resumenInspecciones");
+                    const resumenUI = document.getElementById("resumenContadores");
                     if (resumenUI) {
                         resumenUI.innerText = `Resumen: (${totalVerde}🟢 | ${totalAmarillo}🟡 | ${totalRojo}🔴)`;
                     }
