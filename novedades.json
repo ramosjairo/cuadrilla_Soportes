@@ -1,12 +1,9 @@
 {
-  "version": "v5.1",
-  "titulo": "🚀 ¡Nueva Versión Instalada (v5.1)!",
-  "fecha": "2026-07-23",
+  "version": "v5.2",
+  "titulo": "🚀 ¡Nueva Versión Instalada (v5.2)!",
+  "fecha": "2026-07-27",
   "cambios": [
-    "📸 Mejoras en la captura de fotos: Opción cámara/galería y confirmación visual en rojo para asegurar su carga.",
-    "📊 Corrección de visibilidad: El resumen de contadores por color al pie de la tabla ahora es completamente visible y funcional.",
-    "📝 Formato de reporte más limpio: Se eliminaron los corchetes en los nombres del coordinador y de los inspectores en WhatsApp.",
-    "👔 Gestión de Coordinador: Campo para registrar al Coordinador de brigada en la configuración y reportes.",
-    "📜 Control de Certificados: Opción para activar/desactivar la inclusión del certificado en los reportes."
+    "📸 Nuevo menú personalizado para capturar fotos: permite elegir de forma garantizada entre \"Tomar Foto con Cámara\" y \"Elegir de Galería\".",
+    "📱 Corrección de estabilidad en la cámara para dispositivos móviles."
   ]
 }

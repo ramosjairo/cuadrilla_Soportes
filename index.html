@@ -302,15 +302,54 @@
             background-color: #ffebee;
         }
 
-        .photo-uploader input[type="file"] {
-            position: absolute;
+        /* Estilos para el Menú Flotante de Fotos */
+        .modal-overlay-foto {
+            position: fixed;
             top: 0;
             left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            align-items: flex-end;
+            justify-content: center;
+            z-index: 2000;
+        }
+
+        .modal-menu-foto {
+            background: #fff;
             width: 100%;
-            height: 100%;
-            opacity: 0;
-            cursor: pointer;
-            z-index: 10;
+            max-width: 450px;
+            border-top-left-radius: 16px;
+            border-top-right-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 -4px 12px rgba(0,0,0,0.15);
+            animation: slideUpFoto 0.3s ease-out;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        @keyframes slideUpFoto {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+
+        .modal-menu-foto h3 {
+            margin-bottom: 8px;
+            text-align: center;
+            font-size: 1.15rem;
+            color: #333;
+        }
+
+        .modal-menu-foto .btn {
+            width: 100%;
+            padding: 14px;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
 
         .preview-img {
@@ -594,18 +633,20 @@
 
                 <div class="form-group">
                     <label>Foto del Frente</label>
-                    <div class="photo-uploader">
+                    <div class="photo-uploader" onclick="abrirMenuFoto('Frente')">
                         <span>📸 Capturar/Elegir Frente</span>
-                        <input type="file" id="fileFrente" accept="image/*" onchange="procesarImagen(this, 'prevFrente')">
+                        <input type="file" id="fileFrenteCamara" accept="image/*" capture="environment" style="display:none;" onchange="procesarImagen(this, 'prevFrente')" onclick="event.stopPropagation()">
+                        <input type="file" id="fileFrenteGaleria" accept="image/*" style="display:none;" onchange="procesarImagen(this, 'prevFrente')" onclick="event.stopPropagation()">
                         <img id="prevFrente" class="preview-img" alt="Frente">
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label>Foto de Respaldo</label>
-                    <div class="photo-uploader">
+                    <div class="photo-uploader" onclick="abrirMenuFoto('Respaldo')">
                         <span>📸 Capturar/Elegir Respaldo</span>
-                        <input type="file" id="fileRespaldo" accept="image/*" onchange="procesarImagen(this, 'prevRespaldo')">
+                        <input type="file" id="fileRespaldoCamara" accept="image/*" capture="environment" style="display:none;" onchange="procesarImagen(this, 'prevRespaldo')" onclick="event.stopPropagation()">
+                        <input type="file" id="fileRespaldoGaleria" accept="image/*" style="display:none;" onchange="procesarImagen(this, 'prevRespaldo')" onclick="event.stopPropagation()">
                         <img id="prevRespaldo" class="preview-img" alt="Respaldo">
                     </div>
                 </div>
@@ -753,9 +794,39 @@
         </div>
     </div>
 
+    <!-- Modal Menu para Foto -->
+    <div id="modalMenuFoto" class="modal-overlay-foto">
+        <div class="modal-menu-foto">
+            <h3>Seleccionar Origen</h3>
+            <button class="btn btn-primary" onclick="seleccionarFoto('camara')">📸 Tomar Foto con Cámara</button>
+            <button class="btn btn-secondary" onclick="seleccionarFoto('galeria')">📁 Elegir de Galería / Archivos</button>
+            <button class="btn btn-danger" onclick="cerrarMenuFoto()">❌ Cancelar</button>
+        </div>
+    </div>
+
     <div id="toast" class="toast"></div>
 
     <script>
+        // ======= LÓGICA DEL MENÚ DE FOTOS =======
+        let currentPhotoTarget = '';
+
+        function abrirMenuFoto(target) {
+            currentPhotoTarget = target;
+            document.getElementById('modalMenuFoto').style.display = 'flex';
+        }
+
+        function cerrarMenuFoto() {
+            document.getElementById('modalMenuFoto').style.display = 'none';
+        }
+
+        function seleccionarFoto(origen) {
+            cerrarMenuFoto();
+            if (origen === 'camara') {
+                document.getElementById('file' + currentPhotoTarget + 'Camara').click();
+            } else {
+                document.getElementById('file' + currentPhotoTarget + 'Galeria').click();
+            }
+        }
         const DB_NAME = "InspeccionesDB";
         const DB_VERSION = 1;
         let db;
