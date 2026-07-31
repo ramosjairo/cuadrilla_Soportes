@@ -148,12 +148,22 @@
         td {
             padding: 8px;
             border-bottom: 1px solid #eee;
-            cursor: pointer;
             word-break: break-word;
         }
 
-        tr:active {
-            background-color: #f0f4f8;
+        tr.row-verde { background-color: rgba(46, 125, 50, 0.08); }
+        tr.row-amarillo { background-color: rgba(251, 192, 45, 0.12); }
+        tr.row-rojo { background-color: rgba(198, 40, 40, 0.08); }
+
+        .btn-dots {
+            background: none;
+            border: none;
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #555;
+            cursor: pointer;
+            padding: 2px 8px;
+            border-radius: 4px;
         }
 
         .badge {
@@ -187,11 +197,6 @@
             background-color: var(--primary-color);
             color: #ffffff;
             box-shadow: 0 4px 6px rgba(43, 87, 154, 0.2);
-        }
-
-        .btn-primary:active {
-            background-color: var(--primary-dark);
-            transform: scale(0.98);
         }
 
         .btn-secondary {
@@ -288,21 +293,89 @@
         .photo-uploader {
             border: 2px dashed #ccc;
             border-radius: 8px;
-            padding: 10px;
+            padding: 12px;
             text-align: center;
             cursor: pointer;
             background: #fafafa;
             position: relative;
             overflow: hidden;
             transition: all 0.3s ease;
+            min-height: 65px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .photo-uploader.photo-loaded {
-            border-color: #d32f2f;
-            background-color: #ffebee;
+            border-color: #2b579a;
+            background-color: #f0f4f8;
+            padding: 6px;
         }
 
-        /* Estilos para el Menú Flotante de Fotos */
+        .photo-uploader.photo-loaded span {
+            display: none;
+        }
+
+        /* ESTILOS NUEVOS PARA TARJETAS DE SELECCIÓN (IMAGEN 1) */
+        .falla-card-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            padding: 10px 12px;
+            border-radius: 8px;
+            border: 2px solid #ddd;
+            background: #fff;
+            cursor: pointer;
+            margin-bottom: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .falla-card-item.card-verde { border-color: #2e7d32; background-color: rgba(46, 125, 50, 0.04); }
+        .falla-card-item.card-amarillo { border-color: #fbc02d; background-color: rgba(251, 192, 45, 0.06); }
+        .falla-card-item.card-rojo { border-color: #c62828; background-color: rgba(198, 40, 40, 0.04); }
+
+        .falla-card-item input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .falla-card-texto {
+            flex-grow: 1;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #333;
+        }
+
+        /* ESTILOS PARA VISTA DE GESTIÓN (IMAGEN 2) */
+        .falla-categoria {
+            margin-bottom: 12px;
+            border-radius: 8px;
+            padding: 8px;
+            border: 1px solid #ddd;
+        }
+        .falla-categoria-titulo {
+            font-size: 0.85rem;
+            font-weight: bold;
+            padding: 4px 8px;
+            border-radius: 4px;
+            color: #fff;
+            margin-bottom: 6px;
+        }
+        .cat-verde { background-color: #2e7d32; }
+        .cat-amarillo { background-color: #fbc02d; color: #000; }
+        .cat-rojo { background-color: #c62828; }
+
+        .falla-item-gestion {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 0;
+            font-size: 0.85rem;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
         .modal-overlay-foto {
             position: fixed;
             top: 0;
@@ -335,29 +408,11 @@
             to { transform: translateY(0); }
         }
 
-        .modal-menu-foto h3 {
-            margin-bottom: 8px;
-            text-align: center;
-            font-size: 1.15rem;
-            color: #333;
-        }
-
-        .modal-menu-foto .btn {
-            width: 100%;
-            padding: 14px;
-            font-size: 1rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-
         .preview-img {
             width: 100%;
-            max-height: 100px;
+            max-height: 120px;
             object-fit: cover;
             border-radius: 6px;
-            margin-top: 6px;
             display: none;
         }
 
@@ -418,17 +473,21 @@
             font-size: 1.1rem;
             border-bottom: 1px solid #eee;
             padding-bottom: 6px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
         .modal-body {
             font-size: 0.9rem;
-            max-height: 300px;
+            max-height: 320px;
             overflow-y: auto;
         }
 
         .modal-footer {
             display: flex;
-            justify-content: flex-end;
+            justify-content: space-between;
+            align-items: center;
             gap: 6px;
             border-top: 1px solid #eee;
             padding-top: 8px;
@@ -565,18 +624,18 @@
                             <th>Edificio/Casa</th>
                             <th>Color</th>
                             <th>📜 Nro.</th>
+                            <th style="text-align: center; width: 35px;">⋮</th>
                         </tr>
                     </thead>
                     <tbody id="tablaCuerpo"></tbody>
                 </table>
             </div>
 
-            <!-- Resumen compacto de inspecciones del día -->
             <div id="resumenContadores" style="text-align: right; font-size: 0.85rem; font-weight: bold; margin-bottom: 60px; padding-right: 10px;">
                 Resumen: (0🟢 | 0🟡 | 0🔴)
             </div>
 
-            <!-- BARRA DE ACCIONES INFERIOR REESTRUCTURADA -->
+            <!-- BARRA DE ACCIONES INFERIOR -->
             <div class="bottom-actions">
                 <button id="btnDatosCuadrilla" class="btn btn-secondary" style="border-radius: 50%; width: 44px; height: 44px; padding: 0; font-size: 1.2rem; box-shadow: 0 2px 6px rgba(0,0,0,0.15);" title="Datos de cuadrilla (Pulsación Larga)">
                     👥
@@ -629,23 +688,43 @@
                     <input type="text" id="txtCertificado" class="form-control" placeholder="Ej. 92110" required autocomplete="off" inputmode="numeric" pattern="[0-9]*">
                 </div>
 
+                <!-- CAMPO COMENTARIOS -->
                 <div class="form-group">
-                    <label>Foto del Frente</label>
-                    <div class="photo-uploader" onclick="abrirMenuFoto('Frente')">
-                        <span>📸 Capturar/Elegir Frente</span>
-                        <input type="file" id="fileFrenteCamara" accept="image/*" capture="environment" style="display:none;" onchange="procesarImagen(this, 'prevFrente')" onclick="event.stopPropagation()">
-                        <input type="file" id="fileFrenteGaleria" accept="image/*" style="display:none;" onchange="procesarImagen(this, 'prevFrente')" onclick="event.stopPropagation()">
-                        <img id="prevFrente" class="preview-img" alt="Frente">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                        <label for="txtComentarios" style="margin-bottom:0;">Comentarios / Observaciones</label>
+                        <button type="button" class="btn btn-secondary" style="padding: 4px 8px; font-size: 0.75rem;" onclick="abrirModalSeleccionFallas()">
+                            ⚠️ Fallas Típicas
+                        </button>
+                    </div>
+                    
+                    <textarea id="txtComentarios" class="form-control" rows="3" placeholder="Observaciones en campo..." style="resize: vertical;"></textarea>
+                    
+                    <div style="display: flex; justify-content: flex-end; margin-top: 4px;">
+                        <button type="button" class="btn btn-secondary" style="padding: 4px 8px; font-size: 0.75rem;" onclick="copiarComentarios()">
+                            📋 Copiar
+                        </button>
                     </div>
                 </div>
 
+                <!-- FOTO FACHADA -->
                 <div class="form-group">
-                    <label>Foto de Respaldo</label>
+                    <label>Foto de la Fachada</label>
+                    <div class="photo-uploader" onclick="abrirMenuFoto('Frente')">
+                        <span>📸 Capturar/Elegir Fachada</span>
+                        <input type="file" id="fileFrenteCamara" accept="image/*" capture="environment" style="display:none;" onchange="procesarImagen(this, 'prevFrente')" onclick="event.stopPropagation()">
+                        <input type="file" id="fileFrenteGaleria" accept="image/*" style="display:none;" onchange="procesarImagen(this, 'prevFrente')" onclick="event.stopPropagation()">
+                        <img id="prevFrente" class="preview-img" alt="Fachada">
+                    </div>
+                </div>
+
+                <!-- FOTO CERTIFICADO -->
+                <div class="form-group">
+                    <label>Foto del Certificado</label>
                     <div class="photo-uploader" onclick="abrirMenuFoto('Respaldo')">
-                        <span>📸 Capturar/Elegir Respaldo</span>
+                        <span>📸 Capturar/Elegir Certificado</span>
                         <input type="file" id="fileRespaldoCamara" accept="image/*" capture="environment" style="display:none;" onchange="procesarImagen(this, 'prevRespaldo')" onclick="event.stopPropagation()">
                         <input type="file" id="fileRespaldoGaleria" accept="image/*" style="display:none;" onchange="procesarImagen(this, 'prevRespaldo')" onclick="event.stopPropagation()">
-                        <img id="prevRespaldo" class="preview-img" alt="Respaldo">
+                        <img id="prevRespaldo" class="preview-img" alt="Certificado">
                     </div>
                 </div>
 
@@ -709,6 +788,40 @@
 
     </div>
 
+    <!-- MODAL 1: PANTALLA DE SELECCIÓN RÁPIDA (ESTILO IMAGEN 1) -->
+    <div id="modalSeleccionFallas" class="modal" onclick="cerrarModal('modalSeleccionFallas')">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <span>📋 Daños Menores / Post-Sismo</span>
+                <button type="button" class="btn btn-secondary" style="padding: 4px 8px; font-size: 0.75rem;" onclick="abrirModalGestionFallasDesdeSeleccion()">⚙️ Ajustes</button>
+            </div>
+            <div class="modal-body" id="modalSeleccionBody" style="display: flex; flex-direction: column; gap: 8px;">
+                <!-- Generado dinámicamente -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="cerrarModal('modalSeleccionFallas')">Cancelar</button>
+                <button class="btn btn-primary" onclick="aplicarSeleccionFallas()">Aplicar Selección</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 2: PANTALLA DE GESTIÓN / EDICIÓN E IMPORTACIÓN (ESTILO IMAGEN 2) -->
+    <div id="modalGestionFallas" class="modal" onclick="cerrarModal('modalGestionFallas')">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <span>⚙️ Gestión de Fallas / Catálogo</span>
+                <button type="button" class="btn btn-primary" style="padding: 4px 8px; font-size: 0.75rem;" onclick="document.getElementById('fileMasterImport').click()">📁 Importar Catálogo (.txt/.csv)</button>
+                <input type="file" id="fileMasterImport" accept=".txt,.csv" style="display:none;" onchange="importarCatalogoDesdeArchivo(this)">
+            </div>
+            <div class="modal-body" id="modalGestionBody" style="display: flex; flex-direction: column; gap: 12px;">
+                <!-- Generado dinámicamente con opción de añadir y borrar ítems individualmente -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="cerrarModal('modalGestionFallas')">Volver a Selección</button>
+            </div>
+        </div>
+    </div>
+
     <!-- MODAL DE DETALLES -->
     <div id="modalDetalles" class="modal" onclick="cerrarModal('modalDetalles')">
         <div class="modal-content" onclick="event.stopPropagation()">
@@ -720,13 +833,14 @@
         </div>
     </div>
 
-    <!-- MODAL MENU DE FILAS -->
+    <!-- MODAL OPCIONES DE REGISTRO (3 PUNTOS) -->
     <div id="modalMenu" class="modal" onclick="cerrarModal('modalMenu')">
         <div class="modal-content" onclick="event.stopPropagation()">
-            <div class="modal-header">Opciones</div>
+            <div class="modal-header">Opciones de Registro</div>
             <div class="modal-body" style="display: flex; flex-direction: column; gap: 10px;">
-                <p id="menuTargetText" style="font-weight: bold; text-align: center; margin-bottom: 8px;"></p>
-                <button class="btn btn-primary" id="btnMenuEditar" style="width: 100%;">✏️ Editar Registro</button>
+                <p id="menuTargetText" style="font-weight: bold; text-align: center; margin-bottom: 8px; color: #333;"></p>
+                <button class="btn btn-primary" id="btnMenuResumen" style="width: 100%;">👁️ Ver Resumen</button>
+                <button class="btn btn-secondary" id="btnMenuEditar" style="width: 100%;">✏️ Editar Registro</button>
                 <button class="btn btn-danger" id="btnMenuEliminar" style="width: 100%;">🗑️ Eliminar Registro</button>
             </div>
             <div class="modal-footer">
@@ -787,24 +901,35 @@
         </div>
     </div>
 
-    <!-- Modal Menu para Foto -->
+    <!-- MODAL MENU DE CAPTURA DE IMAGEN -->
     <div id="modalMenuFoto" class="modal-overlay-foto">
         <div class="modal-menu-foto">
-            <h3>Seleccionar Origen</h3>
-            <button class="btn btn-primary" onclick="seleccionarFoto('camara')">📸 Tomar Foto con Cámara</button>
-            <button class="btn btn-secondary" onclick="seleccionarFoto('galeria')">📁 Elegir de Galería / Archivos</button>
-            <button class="btn btn-danger" onclick="cerrarMenuFoto()">❌ Cancelar</button>
+            <h3>Captura de Imagen</h3>
+            <button class="btn btn-primary" onclick="seleccionarFoto('camara')">📸 Usar Cámara</button>
+            <button class="btn btn-secondary" onclick="seleccionarFoto('galeria')">📁 Elegir de Archivos</button>
+            <button class="btn btn-danger" id="btnMenuEliminarFoto" onclick="seleccionarFoto('eliminar')">🗑️ Eliminar Imagen</button>
+            <button class="btn btn-secondary" style="background:#888; color:#fff;" onclick="cerrarMenuFoto()">❌ Cancelar</button>
         </div>
     </div>
 
     <div id="toast" class="toast"></div>
 
     <script>
-        // ======= LÓGICA DEL MENÚ DE FOTOS =======
         let currentPhotoTarget = '';
 
         function abrirMenuFoto(target) {
             currentPhotoTarget = target;
+            
+            const prevId = target === 'Frente' ? 'prevFrente' : 'prevRespaldo';
+            const imgPreview = document.getElementById(prevId);
+            const btnEliminar = document.getElementById('btnMenuEliminarFoto');
+
+            if (imgPreview && imgPreview.src && imgPreview.src.startsWith("data:")) {
+                btnEliminar.style.display = "flex";
+            } else {
+                btnEliminar.style.display = "none";
+            }
+
             document.getElementById('modalMenuFoto').style.display = 'flex';
         }
 
@@ -816,10 +941,13 @@
             cerrarMenuFoto();
             if (origen === 'camara') {
                 document.getElementById('file' + currentPhotoTarget + 'Camara').click();
-            } else {
+            } else if (origen === 'galeria') {
                 document.getElementById('file' + currentPhotoTarget + 'Galeria').click();
+            } else if (origen === 'eliminar') {
+                eliminarFotoForm(currentPhotoTarget);
             }
         }
+
         const DB_NAME = "InspeccionesDB";
         const DB_VERSION = 1;
         let db;
@@ -874,7 +1002,6 @@
             }
         };
 
-        let pressTimer;
         let cuadrillaPressTimer;
         let isLongPress = false;
         let activeRecordId = null;
@@ -1096,13 +1223,19 @@
         function mostrarFormulario(idEdit = null) {
             document.getElementById("inspeccionForm").reset();
             document.getElementById("editId").value = "";
+            document.getElementById("txtComentarios").value = "";
+            
             document.getElementById("prevFrente").style.display = "none";
             document.getElementById("prevFrente").src = "";
             document.getElementById("prevFrente").closest('.photo-uploader').classList.remove('photo-loaded');
+            document.getElementById("fileFrenteCamara").value = "";
+            document.getElementById("fileFrenteGaleria").value = "";
             
             document.getElementById("prevRespaldo").style.display = "none";
             document.getElementById("prevRespaldo").src = "";
             document.getElementById("prevRespaldo").closest('.photo-uploader').classList.remove('photo-loaded');
+            document.getElementById("fileRespaldoCamara").value = "";
+            document.getElementById("fileRespaldoGaleria").value = "";
 
             actualizarDatalistCalles();
 
@@ -1118,6 +1251,7 @@
                         document.getElementById("txtCalle").value = r.calle;
                         document.getElementById("txtEdificio").value = r.edificio;
                         document.getElementById("txtCertificado").value = r.certificado;
+                        document.getElementById("txtComentarios").value = r.comentarios || "";
                         
                         if (r.color === "Verde") document.getElementById("colVerde").checked = true;
                         else if (r.color === "Amarillo" || r.color === "Yellow") document.getElementById("colAmarillo").checked = true;
@@ -1153,7 +1287,7 @@
             const file = input.files[0];
             const preview = document.getElementById(idPreview);
             const uploaderDiv = input.closest('.photo-uploader');
-            
+
             if (!file) {
                 preview.style.display = "none";
                 preview.src = "";
@@ -1166,20 +1300,29 @@
                 const img = new Image();
                 img.onload = function() {
                     const canvas = document.createElement("canvas");
-                    const MAX_WIDTH = 500; 
-                    const scaleSize = MAX_WIDTH / img.width;
-                    
-                    if (img.width > MAX_WIDTH) {
-                        canvas.width = MAX_WIDTH;
-                        canvas.height = img.height * scaleSize;
+                    const maxDimension = 1280;
+                    let width = img.width;
+                    let height = img.height;
+
+                    if (width > height) {
+                        if (width > maxDimension) {
+                            height = Math.round((height * maxDimension) / width);
+                            width = maxDimension;
+                        }
                     } else {
-                        canvas.width = img.width;
-                        canvas.height = img.height;
+                        if (height > maxDimension) {
+                            width = Math.round((width * maxDimension) / height);
+                            height = maxDimension;
+                        }
                     }
 
+                    canvas.width = width;
+                    canvas.height = height;
+
                     const ctx = canvas.getContext("2d");
-                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                    const dataUrl = canvas.toDataURL("image/jpeg", 0.65);
+                    ctx.drawImage(img, 0, 0, width, height);
+                    
+                    const dataUrl = canvas.toDataURL("image/jpeg", 0.80);
                     
                     preview.src = dataUrl;
                     preview.style.display = "block";
@@ -1188,6 +1331,327 @@
                 img.src = e.target.result;
             };
             reader.readAsDataURL(file);
+        }
+
+        function descargarImagen(dataUrl, edificioNombre, numFoto) {
+            if (!dataUrl || !dataUrl.startsWith("data:")) return;
+
+            let yymmdd = "";
+            if (fechaActual && fechaActual.includes("-")) {
+                const partes = fechaActual.split("-");
+                yymmdd = `${partes[0].slice(-2)}${partes[1]}${partes[2]}`;
+            } else {
+                const hoy = new Date();
+                yymmdd = `${hoy.getFullYear().toString().slice(-2)}${String(hoy.getMonth() + 1).padStart(2, '0')}${String(hoy.getDate()).padStart(2, '0')}`;
+            }
+
+            const edifStr = (edificioNombre || "Edificio").trim().replace(/\s+/g, '').replace(/[^a-zA-Z0-9]/g, '');
+            const nombreArchivo = `${yymmdd}_${edifStr || 'Edificio'}_Foto${numFoto}.jpg`;
+
+            const a = document.createElement("a");
+            a.href = dataUrl;
+            a.download = nombreArchivo;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            mostrarToast("💾 Foto guardada");
+        }
+
+        function eliminarFotoForm(target) {
+            const img = document.getElementById("prev" + target);
+            if (img) {
+                img.src = "";
+                img.style.display = "none";
+
+                const uploader = img.closest('.photo-uploader');
+                if (uploader) uploader.classList.remove('photo-loaded');
+
+                document.getElementById('file' + target + 'Camara').value = "";
+                document.getElementById('file' + target + 'Galeria').value = "";
+
+                mostrarToast("🗑️ Imagen eliminada");
+            }
+        }
+
+        function descargarFotoDetalle(id, tipo) {
+            const transaction = db.transaction(["inspecciones"], "readonly");
+            const store = transaction.objectStore("inspecciones");
+            store.get(Number(id)).onsuccess = e => {
+                const r = e.target.result;
+                if (!r) return;
+                const src = tipo === 'Frente' ? r.fotoFrente : r.fotoRespaldo;
+                const numFoto = tipo === 'Frente' ? 1 : 2;
+                descargarImagen(src, r.edificio, numFoto);
+            };
+        }
+
+        // --- GESTIÓN DE CATÁLOGO Y PERSISTENCIA DE FALLAS ---
+        function obtenerCatalogoFallas() {
+            const guardado = localStorage.getItem('catalogo_fallas_dinamico');
+            if (guardado) {
+                try { return JSON.parse(guardado); } catch(e) {}
+            }
+            return {
+                verde: [
+                    "Microfisuras por cortante/flexión en recubrimiento de concreto (< 0.3 mm).",
+                    "Descascaramiento puntual de recubrimiento (Spalling leve) sin acero expuesto.",
+                    "Fisura lineal fina sobre junta de mortero (ancho < 1 mm).",
+                    "Descascaramiento o fisuración leve del acabado sin afectación del bloque."
+                ],
+                amarillo: [
+                    "Grietas diagonales en X por cortante en muros o columnas.",
+                    "Agrietamiento por flexión en extremos de vigas.",
+                    "Spalling severo con exposición de acero de refuerzo (sin pandeo)."
+                ],
+                rojo: [
+                    "Sin etiqueta identificadora visible o daño estructural mayor crítico.",
+                    "Acceso totalmente bloqueado, fallas severas con pandeo de acero."
+                ]
+            };
+        }
+
+        function guardarCatalogoFallas(cat) {
+            localStorage.setItem('catalogo_fallas_dinamico', JSON.stringify(cat));
+        }
+
+        // --- VENTANA 1: SELECCIÓN RÁPIDA (Estilo Imagen 1) ---
+        function abrirModalSeleccionFallas() {
+            renderizarModalSeleccion();
+            abrirModal('modalSeleccionFallas');
+        }
+
+        function renderizarModalSeleccion() {
+            const catalogo = obtenerCatalogoFallas();
+            const txtComentarios = document.getElementById('txtComentarios').value;
+            const container = document.getElementById('modalSeleccionBody');
+            container.innerHTML = "";
+
+            const secciones = [
+                { key: 'verde', labelBadge: 'Verde', cssCard: 'card-verde' },
+                { key: 'amarillo', labelBadge: 'Amarillo', cssCard: 'card-amarillo' },
+                { key: 'rojo', labelBadge: 'Rojo', cssCard: 'card-rojo' }
+            ];
+
+            secciones.forEach(sec => {
+                if (catalogo[sec.key]) {
+                    catalogo[sec.key].forEach(itemText => {
+                        const isChecked = txtComentarios.includes(itemText);
+                        const card = document.createElement('div');
+                        card.className = `falla-card-item ${sec.cssCard}`;
+                        card.innerHTML = `
+                            <input type="checkbox" value="${itemText}" data-categoria="${sec.key}" ${isChecked ? 'checked' : ''}>
+                            <span class="falla-card-texto">${itemText}</span>
+                            <span class="badge badge-${sec.key === 'amarillo' ? 'amarillo' : (sec.key === 'rojo' ? 'rojo' : 'verde')}">${sec.labelBadge}</span>
+                        `;
+                        card.onclick = (e) => {
+                            if (e.target.tagName !== 'INPUT') {
+                                const chk = card.querySelector('input[type="checkbox"]');
+                                chk.checked = !chk.checked;
+                            }
+                        };
+                        container.appendChild(card);
+                    });
+                }
+            });
+        }
+
+        function aplicarSeleccionFallas() {
+            const checkboxes = document.querySelectorAll('#modalSeleccionBody input[type="checkbox"]:checked');
+            const txtArea = document.getElementById('txtComentarios');
+            const catalogo = obtenerCatalogoFallas();
+            let textoActual = txtArea.value;
+
+            const allCatItems = [...catalogo.verde, ...catalogo.amarillo, ...catalogo.rojo];
+            allCatItems.forEach(item => {
+                const regex1 = new RegExp(`•\\s*${escapeRegExp(item)}\\r?\\n?`, 'g');
+                textoActual = textoActual.replace(regex1, '');
+            });
+            
+            textoActual = textoActual.trim();
+
+            const nuevasViñetas = [];
+            checkboxes.forEach(cb => {
+                nuevasViñetas.push(`• ${cb.value}`);
+            });
+
+            const textoAInsertar = nuevasViñetas.join('\n');
+
+            if (textoActual.length > 0 && textoAInsertar.length > 0) {
+                txtArea.value = textoActual + '\n' + textoAInsertar;
+            } else if (textoAInsertar.length > 0) {
+                txtArea.value = textoAInsertar;
+            } else {
+                txtArea.value = textoActual;
+            }
+
+            cerrarModal('modalSeleccionFallas');
+            mostrarToast("✅ Observaciones actualizadas");
+        }
+
+        function abrirModalGestionFallasDesdeSeleccion() {
+            cerrarModal('modalSeleccionFallas');
+            abrirModalGestionFallas();
+        }
+
+        // --- VENTANA 2: GESTIÓN Y EDICIÓN E IMPORTACIÓN (Estilo Imagen 2) ---
+        function abrirModalGestionFallas() {
+            renderizarModalGestion();
+            abrirModal('modalGestionFallas');
+        }
+
+        function renderizarModalGestion() {
+            const catalogo = obtenerCatalogoFallas();
+            const container = document.getElementById('modalGestionBody');
+            container.innerHTML = "";
+
+            const categoriasConfig = [
+                { key: 'verde', title: '🟢 Conforme / Detalle Menor', css: 'cat-verde' },
+                { key: 'amarillo', title: '🟡 Observación / Ajuste Recomendado', css: 'cat-amarillo' },
+                { key: 'rojo', title: '🔴 Crítico / Inconformidad Mayor', css: 'cat-rojo' }
+            ];
+
+            categoriasConfig.forEach(catInfo => {
+                const divCat = document.createElement('div');
+                divCat.className = 'falla-categoria';
+
+                divCat.innerHTML = `
+                    <div class="falla-categoria-titulo ${catInfo.css}">${catInfo.title}</div>
+                    <div id="gestion_lista_${catInfo.key}" style="display: flex; flex-direction: column; gap: 4px; margin-bottom: 6px;"></div>
+                    <div style="display: flex; gap: 4px; margin-top: 6px;">
+                        <input type="text" id="gestion_nuevo_${catInfo.key}" class="form-control" placeholder="Añadir nueva opción..." style="font-size: 0.8rem; padding: 4px 8px;" autocomplete="off">
+                        <button type="button" class="btn btn-secondary" style="padding: 4px 8px; font-size: 0.8rem;" onclick="agregarFallaManual('${catInfo.key}')">➕</button>
+                    </div>
+                `;
+                container.appendChild(divCat);
+
+                const listaDiv = divCat.querySelector(`#gestion_lista_${catInfo.key}`);
+                catalogo[catInfo.key].forEach((itemText, idx) => {
+                    const row = document.createElement('div');
+                    row.className = 'falla-item-gestion';
+                    row.innerHTML = `
+                        <span style="flex-grow:1;">${itemText}</span>
+                        <button type="button" class="btn-icon" style="color: #c62828;" onclick="eliminarFallaManual('${catInfo.key}', ${idx})" title="Eliminar del catálogo">🗑️</button>
+                    `;
+                    listaDiv.appendChild(row);
+                });
+            });
+        }
+
+        function agregarFallaManual(categoriaKey) {
+            const input = document.getElementById(`gestion_nuevo_${categoriaKey}`);
+            const valor = input.value.trim();
+            if (!valor) return;
+
+            const catalogo = obtenerCatalogoFallas();
+            if (!catalogo[categoriaKey].includes(valor)) {
+                catalogo[categoriaKey].push(valor);
+                guardarCatalogoFallas(catalogo);
+                renderizarModalGestion();
+                mostrarToast("✅ Opción agregada al catálogo");
+            } else {
+                alert("Esta opción ya existe en el catálogo.");
+            }
+        }
+
+        function eliminarFallaManual(categoriaKey, index) {
+            if (confirm("¿Desea eliminar esta opción del catálogo permanente?")) {
+                const catalogo = obtenerCatalogoFallas();
+                catalogo[categoriaKey].splice(index, 1);
+                guardarCatalogoFallas(catalogo);
+                renderizarModalGestion();
+                mostrarToast("🗑️ Opción eliminada del catálogo");
+            }
+        }
+
+        // --- IMPORTACIÓN MAESTRA DESDE ARCHIVO DE TEXTO (100% OFFLINE) ---
+        function importarCatalogoDesdeArchivo(input) {
+            const file = input.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const contenido = e.target.result;
+                const lineas = contenido.split(/\r?\n/);
+                
+                const catalogoActual = obtenerCatalogoFallas();
+                let importadosCount = 0;
+
+                lineas.forEach(linea => {
+                    const lineaLimpia = linea.trim();
+                    if (!lineaLimpia || lineaLimpia.startsWith('#')) return;
+
+                    const partes = lineaLimpia.split(';');
+                    if (partes.length >= 2) {
+                        const categoriaRaw = partes[0].trim().toLowerCase();
+                        const textoFalla = partes.slice(1).join(';').trim();
+
+                        if (textoFalla) {
+                            if (categoriaRaw.includes('verde')) {
+                                if (!catalogoActual.verde.includes(textoFalla)) {
+                                    catalogoActual.verde.push(textoFalla);
+                                    importadosCount++;
+                                }
+                            } else if (categoriaRaw.includes('amarillo') || categoriaRaw.includes('yellow')) {
+                                if (!catalogoActual.amarillo.includes(textoFalla)) {
+                                    catalogoActual.amarillo.push(textoFalla);
+                                    importadosCount++;
+                                }
+                            } else if (categoriaRaw.includes('rojo')) {
+                                if (!catalogoActual.rojo.includes(textoFalla)) {
+                                    catalogoActual.rojo.push(textoFalla);
+                                    importadosCount++;
+                                }
+                            }
+                        }
+                    }
+                });
+
+                if (importadosCount > 0) {
+                    guardarCatalogoFallas(catalogoActual);
+                    renderizarModalGestion();
+                    mostrarToast(`✅ ${importadosCount} ítems importados con éxito`);
+                } else {
+                    alert("⚠️ No se encontraron ítems válidos. Verifique que el archivo use el formato: Color; Descripción");
+                }
+                input.value = "";
+            };
+            reader.readAsText(file);
+        }
+
+        function escapeRegExp(string) {
+            return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        }
+
+        function copiarComentarios() {
+            const txtArea = document.getElementById('txtComentarios');
+            const texto = txtArea.value.trim();
+
+            if (!texto) {
+                mostrarToast("⚠️ El campo de comentarios está vacío");
+                return;
+            }
+
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(texto).then(() => {
+                    mostrarToast("📋 Comentarios copiados");
+                }).catch(() => {
+                    copiarComentariosFallback(texto);
+                });
+            } else {
+                copiarComentariosFallback(texto);
+            }
+        }
+
+        function copiarComentariosFallback(texto) {
+            const txtArea = document.getElementById('txtComentarios');
+            txtArea.select();
+            txtArea.setSelectionRange(0, 99999);
+            try {
+                document.execCommand("copy");
+                mostrarToast("📋 Comentarios copiados");
+            } catch (err) {
+                alert("Error al copiar texto.");
+            }
         }
 
         function actualizarDatalistCalles() {
@@ -1206,6 +1670,7 @@
             const calle = document.getElementById("txtCalle").value.trim();
             const edificio = document.getElementById("txtEdificio").value.trim();
             const certificado = document.getElementById("txtCertificado").value.trim();
+            const comentarios = document.getElementById("txtComentarios").value.trim();
             
             if (!/^\d+$/.test(certificado)) {
                 alert("❌ El Nro. de Certificado debe contener únicamente dígitos numéricos sin espacios ni letras.");
@@ -1228,6 +1693,7 @@
                 edificio,
                 certificado,
                 color,
+                comentarios,
                 fotoFrente,
                 fotoRespaldo
             };
@@ -1251,7 +1717,6 @@
             }
         }
 
-        // Carga de tabla y ordenamiento inteligente del autocompletado de calles (Recientes Primero)
         function cargarTabla() {
             const tbody = document.getElementById("tablaCuerpo");
             tbody.innerHTML = "";
@@ -1267,7 +1732,6 @@
                 const registros = event.target.result || [];
                 let inspeccionesDelDia = [];
 
-                // 1. Llenar callesExistentes ordenando desde la inspección más reciente hasta la más antigua
                 for (let i = registros.length - 1; i >= 0; i--) {
                     const r = registros[i];
                     if (r.calle && r.calle.trim() !== "") {
@@ -1275,7 +1739,6 @@
                     }
                 }
 
-                // 2. Renderizar filas en la tabla para la fecha activa
                 registros.forEach(r => {
                     if (r.fecha === fechaActual) {
                         inspeccionesDelDia.push(r);
@@ -1283,11 +1746,16 @@
                         tr.dataset.id = r.id;
 
                         let badgeClass = "badge-verde";
+                        let rowClass = "row-verde";
                         if (r.color === "Amarillo" || r.color === "Yellow") {
                             badgeClass = "badge-amarillo";
+                            rowClass = "row-amarillo";
                         } else if (r.color === "Rojo") {
                             badgeClass = "badge-rojo";
+                            rowClass = "row-rojo";
                         }
+
+                        tr.className = rowClass;
 
                         let certDisplay = "-";
                         if (r.certificado && r.certificado.toString().trim() !== "") {
@@ -1300,8 +1768,11 @@
                             <td>${r.edificio}</td>
                             <td><span class="badge ${badgeClass}">${r.color === 'Yellow' ? 'Amarillo' : r.color}</span></td>
                             <td>${certDisplay}</td>
+                            <td style="text-align: center; padding: 2px;">
+                                <button class="btn-dots" onclick="lanzarMenuOpciones(event, ${r.id})">⋮</button>
+                            </td>
                         `;
-                        vincularEventosFila(tr, r.id);
+                        
                         tbody.appendChild(tr);
                     }
                 });
@@ -1322,28 +1793,6 @@
             };
         }
 
-        function vincularEventosFila(fila, id) {
-            const iniciarPresion = e => {
-                pressTimer = setTimeout(() => {
-                    e.preventDefault();
-                    lanzarMenuOpciones(id);
-                }, 800);
-            };
-            const cancelarPresion = () => clearTimeout(pressTimer);
-            const ejecutarClic = () => {
-                if (pressTimer) clearTimeout(pressTimer);
-                if (document.getElementById("modalMenu").style.display !== "flex") {
-                    verDetalleInspeccion(id);
-                }
-            };
-            fila.addEventListener("touchstart", iniciarPresion, { passive: true });
-            fila.addEventListener("touchend", ejecutarClic);
-            fila.addEventListener("touchmove", cancelarPresion, { passive: true });
-            fila.addEventListener("mousedown", iniciarPresion);
-            fila.addEventListener("mouseup", ejecutarClic);
-            fila.addEventListener("mouseleave", cancelarPresion);
-        }
-
         function verDetalleInspeccion(id) {
             const transaction = db.transaction(["inspecciones"], "readonly");
             const store = transaction.objectStore("inspecciones");
@@ -1351,17 +1800,31 @@
                 const r = e.target.result;
                 if (!r) return;
 
-                document.getElementById("detTitle").innerText = `Detalle Inspección (ID ${r.id})`;
+                document.getElementById("detTitle").innerText = `${r.calle} | ${r.edificio}`;
                 let badgeClass = r.color === "Verde" ? "badge-verde" : (r.color === "Amarillo" || r.color === "Yellow" ? "badge-amarillo" : "badge-rojo");
 
                 let htmlFotos = "";
                 if (r.fotoFrente || r.fotoRespaldo) {
                     htmlFotos = `<p style="font-size:0.75rem; color:#666; text-align:center; margin-top:8px; margin-bottom: 2px;">🔍 Toca una imagen para verla en pantalla completa</p>`;
                     htmlFotos += `<div class="detail-photos">`;
-                    if (r.fotoFrente) htmlFotos += `<div><strong>Frente:</strong><br><img src="${r.fotoFrente}" onclick="abrirZoom(this)"></div>`;
-                    if (r.fotoRespaldo) htmlFotos += `<div><strong>Respaldo:</strong><br><img src="${r.fotoRespaldo}" onclick="abrirZoom(this)"></div>`;
+                    if (r.fotoFrente) {
+                        htmlFotos += `<div style="display:flex; flex-direction:column; gap:4px;">
+                            <strong>Fachada:</strong>
+                            <img src="${r.fotoFrente}" onclick="abrirZoom(this)">
+                            <button class="btn btn-secondary" style="padding: 6px 8px; font-size: 0.8rem; border: 1px solid #ccc;" onclick="descargarFotoDetalle('${r.id}', 'Frente')">💾 Guardar foto</button>
+                        </div>`;
+                    }
+                    if (r.fotoRespaldo) {
+                        htmlFotos += `<div style="display:flex; flex-direction:column; gap:4px;">
+                            <strong>Certificado:</strong>
+                            <img src="${r.fotoRespaldo}" onclick="abrirZoom(this)">
+                            <button class="btn btn-secondary" style="padding: 6px 8px; font-size: 0.8rem; border: 1px solid #ccc;" onclick="descargarFotoDetalle('${r.id}', 'Respaldo')">💾 Guardar foto</button>
+                        </div>`;
+                    }
                     htmlFotos += `</div>`;
                 }
+
+                let htmlComentarios = r.comentarios ? `<p style="margin-top:8px;"><strong>Comentarios:</strong><br><span style="white-space: pre-line; color:#444;">${r.comentarios}</span></p>` : "";
 
                 document.getElementById("detBody").innerHTML = `
                     <p><strong>Día:</strong> ${r.fecha}</p>
@@ -1369,6 +1832,7 @@
                     <p><strong>Edificación:</strong> ${r.edificio}</p>
                     <p><strong>📜:</strong> ${r.certificado}</p>
                     <p><strong>Color:</strong> <span class="badge ${badgeClass}">${r.color === 'Yellow' ? 'Amarillo' : r.color}</span></p>
+                    ${htmlComentarios}
                     ${htmlFotos}
                 `;
                 abrirModal("modalDetalles");
@@ -1385,14 +1849,21 @@
 
         function cerrarZoom() { document.getElementById("modalZoom").style.display = "none"; }
 
-        function lanzarMenuOpciones(id) {
+        function lanzarMenuOpciones(event, id) {
+            if (event) event.stopPropagation();
             activeRecordId = id;
+            
             const transaction = db.transaction(["inspecciones"], "readonly");
             const store = transaction.objectStore("inspecciones");
             store.get(id).onsuccess = e => {
                 const r = e.target.result;
                 if (r) {
-                    document.getElementById("menuTargetText").innerText = `${r.calle} - ${r.edificio}`;
+                    document.getElementById("menuTargetText").innerText = `${r.calle} - ${r.edificio} (${r.certificado})`;
+                    
+                    document.getElementById("btnMenuResumen").onclick = () => {
+                        cerrarModal("modalMenu");
+                        verDetalleInspeccion(id);
+                    };
                     document.getElementById("btnMenuEditar").onclick = () => {
                         cerrarModal("modalMenu");
                         mostrarFormulario(id);
@@ -1477,7 +1948,7 @@
                         rStr += `\n`;
                     }
 
-                    rStr += `_Resumen: (${totalVerdes}🟢| ${totalAmarillas}🟠 | ${totalRojas}🔴)_\n\n`;
+                    rStr += `_Resumen: (${totalVerdes}🟢 | ${totalAmarillas}🟠 | ${totalRojas}🔴)_\n\n`;
                     rStr += `*TOTAL INSPECCIONES: ${registros.length}*\n`;
                     rStr += `====================\n`;
                     rStr += `Coordinador de brigada:\n`;
@@ -1627,7 +2098,7 @@
                 };
             } catch (err) {
                 console.error(err);
-                alert("❌ Error crítico leyendo el portapapeles. Asegúrate de haber dado permisos al navegador y de copiar el mensaje completo.");
+                alert("❌ Error crítico leyendo el portapapeles.");
             }
         }
 
@@ -1706,7 +2177,7 @@
                         });
 
                         tx.oncomplete = () => {
-                            alert(`📊 Compaginación Completada:\n• Registros nuevos incorporados: ${agregados}\n• Duplicados omitidos de forma segura: ${dataImportada.inspecciones.length - agregados}\n\nLa nómina de inspectores del día también ha sido actualizada.`);
+                            alert(`📊 Compaginación Completada:\n• Registros nuevos incorporados: ${agregados}\n• Duplicados omitidos de forma segura: ${dataImportada.inspecciones.length - agregados}`);
                             input.value = "";
                             comprobarConfiguracionFecha(fechaActual);
                             cargarTabla();
@@ -1742,7 +2213,6 @@
             setTimeout(() => toast.style.opacity = "0", 2500);
         }
 
-        // Registro del Service Worker
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('./sw.js', { scope: './' })

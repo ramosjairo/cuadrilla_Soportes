@@ -1,9 +1,9 @@
 {
-  "version": "v5.3",
-  "titulo": "🚀 ¡Nueva Versión Instalada (v5.3)!",
+  "version": "v5.4",
+  "titulo": "🚀 ¡Nueva Versión Instalada (v5.4)!",
   "fecha": "2026-07-31",
   "cambios": [
-    "📍 Autocompletado Inteligente: Las calles y sectores más recientes aparecen de primero en la lista desplegable.",
-    "📱 Optimización de refresco de caché para la cuadrilla."
+    "📱 Ajustes en presentación UOX.",
+    "📱 Correccion de errores preexistentes"
   ]
 }
