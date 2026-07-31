@@ -534,7 +534,6 @@
         <div id="viewMain" class="view active">
             <div class="header">
                 <div class="header-title">
-                    <!-- [MODIFICACIÓN] 1: Ícono SVG reemplazado por la imagen logo.png asegurando las mismas dimensiones -->
                     <img src="logo.png" alt="Logo" style="height: 24px; width: auto; object-fit: contain;">
                     <h2>Inspecciones</h2>
                 </div>
@@ -627,7 +626,6 @@
 
                 <div class="form-group">
                     <label for="txtCertificado">Nro. Certificado</label>
-                    <!-- [MODIFICACIÓN] 3. OPTIMIZACIÓN UX MÓVIL: Atributos inputmode y pattern para mostrar teclado numérico directamente -->
                     <input type="text" id="txtCertificado" class="form-control" placeholder="Ej. 92110" required autocomplete="off" inputmode="numeric" pattern="[0-9]*">
                 </div>
 
@@ -665,7 +663,6 @@
             </div>
             
             <form id="configForm" onsubmit="guardarConfiguracion(event)">
-                <!-- [MODIFICACIÓN] 1. REORDENAMIENTO: Parroquia primero -->
                 <div class="form-group">
                     <label for="cfgParroquia">Parroquia</label>
                     <input type="text" id="cfgParroquia" class="form-control" placeholder="Ej. El Recreo" required autocomplete="off">
@@ -676,7 +673,6 @@
                     <input type="text" id="cfgGrupo" class="form-control" placeholder="Ej. Grupo Central" required autocomplete="off">
                 </div>
 
-                <!-- [MODIFICACIÓN] 1. REORDENAMIENTO: Coordinador -->
                 <div class="form-group">
                     <label for="cfgCoordinador">Coordinador</label>
                     <input type="text" id="cfgCoordinador" class="form-control" placeholder="Nombre del Coordinador" required autocomplete="off">
@@ -691,7 +687,6 @@
                     <div class="inspector-badge-list" id="lstInspectores"></div>
                 </div>
 
-                <!-- [MODIFICACIÓN] 2. REUBICACIÓN SELECTOR CON SEPARADOR -->
                 <div style="margin-top: 20px; padding-top: 15px; border-top: 1px solid #eee;">
                     <div class="form-group" style="display: flex; align-items: center; gap: 8px; margin-bottom: 0;">
                         <input type="checkbox" id="cfgMostrarCertificado" style="width: 18px; height: 18px; cursor: pointer;">
@@ -740,14 +735,13 @@
         </div>
     </div>
 
-    <!-- MODAL SUBMENÚ DISCRETO: COMPARTIR DATA CUADRILLA (JSON POR EMAIL) -->
+    <!-- MODAL SUBMENÚ DISCRETO: COMPARTIR DATA CUADRILLA -->
     <div id="modalSincronizacion" class="modal" onclick="cerrarModal('modalSincronizacion')">
         <div class="modal-content" onclick="event.stopPropagation()">
             <div class="modal-header">📲 Datos de Cuadrilla (Colegas)</div>
             <div class="modal-body" style="display: flex; flex-direction: column; gap: 12px; padding-top: 10px;">
                 <p style="font-size: 0.85rem; color: #555; text-align: center;">Comparte la jornada actual vía WhatsApp o exporta todo el JSON localmente.</p>
                 
-                <!-- NUEVOS BOTONES WHATSAPP -->
                 <button class="btn btn-primary" style="width: 100%; font-size: 0.9rem; background-color: #25D366; border-color: #25D366; color: white;" onclick="exportarJornadaWhatsApp()">
                     📤 Compartir Reporte Diario
                 </button>
@@ -779,13 +773,12 @@
         <img class="modal-zoom-contenido" id="imgZoomed" alt="Inspección Ampliada">
     </div>
 
-    <!-- [MODIFICACIÓN] 2: Modal de Novedades (Changelog) -->
+    <!-- Modal de Novedades (Changelog) -->
     <div id="modalNovedades" class="modal" onclick="cerrarModal('modalNovedades')">
         <div class="modal-content" onclick="event.stopPropagation()">
             <div class="modal-header" id="novedadesTitle">🚀 ¡Novedades!</div>
             <div class="modal-body" style="display: flex; flex-direction: column; gap: 10px;">
                 <ul id="novedadesList" style="padding-left: 20px; margin: 0; font-size: 0.9rem; color: #333; line-height: 1.4;">
-                    <!-- Se inyectan dinámicamente vía fetch(novedades.json) -->
                 </ul>
             </div>
             <div class="modal-footer">
@@ -833,7 +826,7 @@
 
         const request = indexedDB.open(DB_NAME, DB_VERSION);
         request.onerror = e => console.error("Error DB:", e);
-        // [MODIFICACIÓN] 2: Función asíncrona para detección de novedades externas
+
         async function verificarNovedades() {
             try {
                 const response = await fetch('novedades.json');
@@ -846,12 +839,11 @@
                     document.getElementById('novedadesTitle').innerText = data.titulo;
                     
                     const ul = document.getElementById('novedadesList');
-                    ul.innerHTML = ""; // Limpiamos contenedor
+                    ul.innerHTML = "";
                     
                     data.cambios.forEach(cambio => {
                         const li = document.createElement('li');
                         li.style.marginBottom = "8px";
-                        // Resaltamos en negrita el título del cambio antes de los dos puntos
                         li.innerHTML = cambio.replace(/^(.*?):/, '<b>$1:</b>');
                         ul.appendChild(li);
                     });
@@ -869,7 +861,7 @@
             inicializarFechaHoy();
             cargarTabla();
             vincularEventosBotonCuadrilla();
-            verificarNovedades(); // Comprobar novedades externas al arrancar
+            verificarNovedades();
         };
 
         request.onupgradeneeded = e => {
@@ -939,14 +931,12 @@
                 const cursor = e.target.result;
                 if (cursor) {
                     const ultimaConfig = cursor.value;
-                    // [MODIFICACIÓN] 2 y 3: Migramos coordinador y mostrarCertificado al buscar historial
                     const nuevaConfig = {
                         fecha: fechaDestino,
                         grupo: ultimaConfig.grupo,
                         coordinador: ultimaConfig.coordinador || "",
                         parroquia: ultimaConfig.parroquia,
                         inspectores: ultimaConfig.inspectores,
-                        // [MODIFICACIÓN] 1: Por defecto activo (true) al heredar historial
                         mostrarCertificado: ultimaConfig.mostrarCertificado !== undefined ? ultimaConfig.mostrarCertificado : true
                     };
 
@@ -1047,16 +1037,13 @@
                 const config = e.target.result;
                 if (config) {
                     document.getElementById("cfgGrupo").value = config.grupo;
-                    // [MODIFICACIÓN] 2: Cargar coordinador en la UI
                     document.getElementById("cfgCoordinador").value = config.coordinador || "";
                     document.getElementById("cfgParroquia").value = config.parroquia;
-                    // [MODIFICACIÓN] 1: Cargar estado del checkbox (Activo por defecto)
                     document.getElementById("cfgMostrarCertificado").checked = config.mostrarCertificado !== undefined ? config.mostrarCertificado : true;
                     
                     inspectoresActuales = config.inspectores || [];
                 } else {
                     inspectoresActuales = [];
-                    // [MODIFICACIÓN] 1: Activar por defecto si es una configuración nueva
                     document.getElementById("cfgMostrarCertificado").checked = true;
                 }
                 renderizarListaInspectores();
@@ -1068,10 +1055,8 @@
         function guardarConfiguracion(e) {
             e.preventDefault();
             const grupo = document.getElementById("cfgGrupo").value.trim();
-            // [MODIFICACIÓN] 2: Capturar coordinador desde el formulario
             const coordinador = document.getElementById("cfgCoordinador").value.trim();
             const parroquia = document.getElementById("cfgParroquia").value.trim();
-            // [MODIFICACIÓN] 3: Capturar valor del checkbox
             const mostrarCertificado = document.getElementById("cfgMostrarCertificado").checked;
 
             if (inspectoresActuales.length === 0) {
@@ -1082,10 +1067,10 @@
             const configObject = {
                 fecha: fechaActual,
                 grupo,
-                coordinador, // [MODIFICACIÓN] 2: Guardado en IndexedDB
+                coordinador,
                 parroquia,
                 inspectores: inspectoresActuales,
-                mostrarCertificado // [MODIFICACIÓN] 3: Guardado en IndexedDB
+                mostrarCertificado
             };
 
             const transaction = db.transaction(["configuracion"], "readwrite");
@@ -1164,8 +1149,6 @@
             document.getElementById("viewMain").classList.add("active");
         }
 
-        // [MODIFICACIÓN] 1. LÓGICA DE COMPRESIÓN DE IMAGEN: Se mantiene fluida sin librerías externas.
-        // Convierte el archivo (sea cámara o galería) en Base64 mediante Canvas de forma nativa.
         function procesarImagen(input, idPreview) {
             const file = input.files[0];
             const preview = document.getElementById(idPreview);
@@ -1224,13 +1207,11 @@
             const edificio = document.getElementById("txtEdificio").value.trim();
             const certificado = document.getElementById("txtCertificado").value.trim();
             
-            // 2. VALIDACIÓN DEL CERTIFICADO (Solo dígitos)
             if (!/^\d+$/.test(certificado)) {
                 alert("❌ El Nro. de Certificado debe contener únicamente dígitos numéricos sin espacios ni letras.");
                 return;
             }
 
-            // 4. VALIDACIÓN DE COLOR DE ETIQUETA
             const colorElement = document.querySelector('input[name="colorEtiqueta"]:checked');
             if (!colorElement) {
                 alert("❌ Debe seleccionar un color de etiqueta para continuar");
@@ -1270,6 +1251,7 @@
             }
         }
 
+        // Carga de tabla y ordenamiento inteligente del autocompletado de calles (Recientes Primero)
         function cargarTabla() {
             const tbody = document.getElementById("tablaCuerpo");
             tbody.innerHTML = "";
@@ -1279,16 +1261,22 @@
 
             const transaction = db.transaction(["inspecciones"], "readonly");
             const store = transaction.objectStore("inspecciones");
-            const requestCursor = store.openCursor();
+            const requestGetAll = store.getAll();
             
-            let inspeccionesDelDia = [];
+            requestGetAll.onsuccess = function(event) {
+                const registros = event.target.result || [];
+                let inspeccionesDelDia = [];
 
-            requestCursor.onsuccess = function(event) {
-                const cursor = event.target.result;
-                if (cursor) {
-                    const r = cursor.value;
-                    if (r.calle) callesExistentes.add(r.calle.trim());
+                // 1. Llenar callesExistentes ordenando desde la inspección más reciente hasta la más antigua
+                for (let i = registros.length - 1; i >= 0; i--) {
+                    const r = registros[i];
+                    if (r.calle && r.calle.trim() !== "") {
+                        callesExistentes.add(r.calle.trim());
+                    }
+                }
 
+                // 2. Renderizar filas en la tabla para la fecha activa
+                registros.forEach(r => {
                     if (r.fecha === fechaActual) {
                         inspeccionesDelDia.push(r);
                         const tr = document.createElement("tr");
@@ -1316,23 +1304,20 @@
                         vincularEventosFila(tr, r.id);
                         tbody.appendChild(tr);
                     }
-                    cursor.continue();
-                } else {
-                    actualizarDatalistCalles();
-                    
-                    let v = 0, a = 0, r = 0;
-                    // Recorrer las inspecciones filtradas del día activo:
-                    inspeccionesDelDia.forEach(i => {
-                        if (i.color === 'Verde' || i.color === 'verde') v++;
-                        if (i.color === 'Amarillo' || i.color === 'amarillo' || i.color === 'Yellow') a++;
-                        if (i.color === 'Rojo' || i.color === 'rojo') r++;
-                    });
-                    
-                    // Inyectar el texto directamente en el DOM:
-                    const elResumen = document.getElementById('resumenContadores');
-                    if (elResumen) {
-                        elResumen.innerHTML = `Resumen: (${v}🟢 | ${a}🟡 | ${r}🔴)`;
-                    }
+                });
+
+                actualizarDatalistCalles();
+                
+                let v = 0, a = 0, r = 0;
+                inspeccionesDelDia.forEach(i => {
+                    if (i.color === 'Verde' || i.color === 'verde') v++;
+                    if (i.color === 'Amarillo' || i.color === 'amarillo' || i.color === 'Yellow') a++;
+                    if (i.color === 'Rojo' || i.color === 'rojo') r++;
+                });
+                
+                const elResumen = document.getElementById('resumenContadores');
+                if (elResumen) {
+                    elResumen.innerHTML = `Resumen: (${v}🟢 | ${a}🟡 | ${r}🔴)`;
                 }
             };
         }
@@ -1481,7 +1466,6 @@
                             let emoji = ins.color === "Verde" ? "🟢" : (ins.color === "Amarillo" || ins.color === "Yellow" ? "🟠" : "🔴");
                             
                             let certStr = "";
-                            // [MODIFICACIÓN] 2: Formato del certificado (primeros 5 dígitos + *) o su omisión si está inactivo
                             if (config.mostrarCertificado !== false && ins.certificado) {
                                 const certCompleto = ins.certificado.toString().trim();
                                 const certReducido = certCompleto.length > 5 ? certCompleto.slice(0, 5) + "*" : certCompleto + "*";
@@ -1496,7 +1480,6 @@
                     rStr += `_Resumen: (${totalVerdes}🟢| ${totalAmarillas}🟠 | ${totalRojas}🔴)_\n\n`;
                     rStr += `*TOTAL INSPECCIONES: ${registros.length}*\n`;
                     rStr += `====================\n`;
-                    // [MODIFICACIÓN] 3: Estructura y orden del pie del reporte
                     rStr += `Coordinador de brigada:\n`;
                     rStr += `${config.coordinador || 'No especificado'}\n\n`;
                     rStr += `Inspectores:\n`;
@@ -1536,22 +1519,6 @@
             }
         }
 
-        // ==========================================================
-        // EXPORTACIÓN ORIENTADA A EMAIL CON RESPALDO DE SEGURIDAD
-        // ==========================================================
-        function descargarJSONLocalmente(blob, nombre) {
-            const lnk = document.createElement("a");
-            lnk.download = nombre;
-            lnk.href = URL.createObjectURL(blob);
-            document.body.appendChild(lnk);
-            lnk.click();
-            document.body.removeChild(lnk);
-            mostrarToast("📥 Descargado. Adjúntalo en tu cliente de correo.");
-        }
-
-        // ==========================================================
-        // EXPORTACIÓN DIRECTA Y LIMPIA A ALMACENAMIENTO LOCAL (.JSON)
-        // ==========================================================
         function descargarJSONLocalmente(blob, nombre) {
             const lnk = document.createElement("a");
             lnk.download = nombre;
@@ -1577,14 +1544,10 @@
                 const blob = new Blob([jsonString], { type: "application/json" });
                 const nombreArchivo = `DATA_CUADRILLA_${fechaActual}.json`;
 
-                // Descarga local directa sin intermediarios ni consumo de memoria externa
                 descargarJSONLocalmente(blob, nombreArchivo);
             };
         }
 
-        // ==========================================================
-        // SINCRONIZACIÓN OFFLINE POR WHATSAPP (PORTAPAPELES)
-        // ==========================================================
         function exportarJornadaWhatsApp() {
             if (!db) return;
             cerrarModal("modalSincronizacion");

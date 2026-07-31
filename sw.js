@@ -1,5 +1,5 @@
-// [MODIFICACIÓN] 1: Incremento de versión a v5.2 para refrescar la caché y limpiar automáticamente
-const CACHE_NAME = 'cuadrilla-cache-v5.2';
+// Incremento de versión a v5.3 para refrescar la caché y limpiar automáticamente
+const CACHE_NAME = 'cuadrilla-cache-v5.3';
 const ASSETS = [
   './',
   './index.html',
