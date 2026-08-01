@@ -1,9 +1,8 @@
 {
-  "version": "v5.4",
-  "titulo": "🚀 ¡Nueva Versión Instalada (v5.4)!",
+  "version": "v5.5",
+  "titulo": "🚀 ¡Nueva Versión Instalada (v5.5)!",
   "fecha": "2026-07-31",
   "cambios": [
-    "📱 Ajustes en presentación UOX.",
     "📱 Correccion de errores preexistentes"
   ]
 }

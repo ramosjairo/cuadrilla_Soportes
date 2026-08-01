@@ -321,13 +321,13 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 10px;
+            gap: 10px !important; /*10px*/
             padding: 10px 12px;
-            border-radius: 8px;
+            border-radius: 0px; /*8px*/
             border: 2px solid #ddd;
             background: #fff;
             cursor: pointer;
-            margin-bottom: 8px;
+            margin-bottom: -1px !important; /*8px*/
             transition: all 0.2s ease;
         }
 
@@ -455,6 +455,26 @@
             align-items: center;
             padding: 15px;
         }
+
+
+            /* Modifica la regla existente o agrégala al CSS */
+            #modalSeleccionFallas .modal-content {
+                width: 100% !important;
+                height: 100% !important;
+                max-width: 100% !important;
+                border-radius: 0 !important; /* Quita los bordes redondeados para abarcar todo el borde */
+                display: flex;
+                flex-direction: column;
+                padding: 15px;
+            }
+
+            /* Para que la lista interna use todo el espacio sobrante y scroll vertical */
+            #modalSeleccionFallas .modal-body {
+                flex-grow: 1 !important;
+                max-height: none !important;
+                overflow-y: auto;
+            }
+
 
         .modal-content {
             background: #fff;
@@ -622,9 +642,14 @@
                         <tr>
                             <th>Calle</th>
                             <th>Edificio/Casa</th>
-                            <th>Color</th>
-                            <th>📜 Nro.</th>
-                            <th style="text-align: center; width: 35px;">⋮</th>
+                            <!-- <th>Color</th> -->
+                            <th style="width: 50px; text-align: center;">Color</th>
+
+                            <!-- <th>📜 Nro.</th> -->
+                            <th style="min-width: 75px; text-align: center; white-space: nowrap;">📜 Nro.</th>
+                            <th style="width: 30px;"></th>
+
+                            <!-- <th style="text-align: center; width: 35px;">⋮</th> -->
                         </tr>
                     </thead>
                     <tbody id="tablaCuerpo"></tbody>
@@ -683,11 +708,6 @@
                     </div>
                 </div>
 
-                <div class="form-group">
-                    <label for="txtCertificado">Nro. Certificado</label>
-                    <input type="text" id="txtCertificado" class="form-control" placeholder="Ej. 92110" required autocomplete="off" inputmode="numeric" pattern="[0-9]*">
-                </div>
-
                 <!-- CAMPO COMENTARIOS -->
                 <div class="form-group">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
@@ -704,6 +724,11 @@
                             📋 Copiar
                         </button>
                     </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="txtCertificado">Nro. Certificado</label>
+                    <input type="text" id="txtCertificado" class="form-control" placeholder="Ej. 92110" required autocomplete="off" inputmode="numeric" pattern="[0-9]*">
                 </div>
 
                 <!-- FOTO FACHADA -->
@@ -792,14 +817,16 @@
     <div id="modalSeleccionFallas" class="modal" onclick="cerrarModal('modalSeleccionFallas')">
         <div class="modal-content" onclick="event.stopPropagation()">
             <div class="modal-header">
-                <span>📋 Daños Menores / Post-Sismo</span>
+                <span>📋 Daños Post-Sismo</span>
                 <button type="button" class="btn btn-secondary" style="padding: 4px 8px; font-size: 0.75rem;" onclick="abrirModalGestionFallasDesdeSeleccion()">⚙️ Ajustes</button>
             </div>
             <div class="modal-body" id="modalSeleccionBody" style="display: flex; flex-direction: column; gap: 8px;">
                 <!-- Generado dinámicamente -->
             </div>
             <div class="modal-footer">
-                <button class="btn btn-secondary" onclick="cerrarModal('modalSeleccionFallas')">Cancelar</button>
+                <!-- <button class="btn btn-secondary" onclick="cerrarModal('modalSeleccionFallas')">Cancelar</button> -->
+
+                <button class="btn btn-secondary" onclick="volverASeleccionFallas()">Volver a Selección</button>
                 <button class="btn btn-primary" onclick="aplicarSeleccionFallas()">Aplicar Selección</button>
             </div>
         </div>
@@ -809,8 +836,8 @@
     <div id="modalGestionFallas" class="modal" onclick="cerrarModal('modalGestionFallas')">
         <div class="modal-content" onclick="event.stopPropagation()">
             <div class="modal-header">
-                <span>⚙️ Gestión de Fallas / Catálogo</span>
-                <button type="button" class="btn btn-primary" style="padding: 4px 8px; font-size: 0.75rem;" onclick="document.getElementById('fileMasterImport').click()">📁 Importar Catálogo (.txt/.csv)</button>
+                <span>⚙️ Gestión de Fallas</span>
+                <button type="button" class="btn btn-primary" style="padding: 4px 8px; font-size: 0.75rem;" onclick="document.getElementById('fileMasterImport').click()">📁 Importar Catálogo</button>
                 <input type="file" id="fileMasterImport" accept=".txt,.csv" style="display:none;" onchange="importarCatalogoDesdeArchivo(this)">
             </div>
             <div class="modal-body" id="modalGestionBody" style="display: flex; flex-direction: column; gap: 12px;">
@@ -916,6 +943,15 @@
 
     <script>
         let currentPhotoTarget = '';
+
+
+        function volverASeleccionFallas() {
+            // 1. Cierra el modal de gestión de fallas
+            cerrarModal('modalGestionFallas');
+            
+            // 2. Abre el modal de selección rápida de daños inmediatamente
+            abrirModalSeleccionFallas();
+        }        
 
         function abrirMenuFoto(target) {
             currentPhotoTarget = target;
@@ -1393,20 +1429,41 @@
             }
             return {
                 verde: [
-                    "Microfisuras por cortante/flexión en recubrimiento de concreto (< 0.3 mm).",
-                    "Descascaramiento puntual de recubrimiento (Spalling leve) sin acero expuesto.",
-                    "Fisura lineal fina sobre junta de mortero (ancho < 1 mm).",
-                    "Descascaramiento o fisuración leve del acabado sin afectación del bloque."
-                ],
-                amarillo: [
-                    "Grietas diagonales en X por cortante en muros o columnas.",
-                    "Agrietamiento por flexión en extremos de vigas.",
-                    "Spalling severo con exposición de acero de refuerzo (sin pandeo)."
-                ],
-                rojo: [
-                    "Sin etiqueta identificadora visible o daño estructural mayor crítico.",
-                    "Acceso totalmente bloqueado, fallas severas con pandeo de acero."
-                ]
+                        "Estructura e infraestructura primaria estables; sin agrietamientos, deformaciones ni daños por sismo.",
+                        "Estructura principal sana con patologías preexistentes. Preexistencias: ",
+                        "Humedad ascendente por capilaridad;",
+                        "Falta de recubrimiento: Acero superficial expuesto sin corrosión severa.",
+                        "Fisuración en juntas de pega: Grietas escalonadas en mortero por baja adherencia en mampostería.",
+                        "Segregación del concreto (Cangrejeras): Nidos de abeja o fisuras puntuales por mal vaciado.",
+                        "Fisuras longitudinales leves: Agrietamiento en vigas por pérdida de adherencia inicial acero-concreto.",
+                        "Aplastamiento local en mampostería: Astillado o trituración menor en vértices de bloques."
+                    ],
+                    amarillo: [
+                        "Falla por Flexión: Deformación en vigas o losas por fluencia del acero (sin rotura frágil).",
+                        "Desprendimiento de recubrimiento (Spalling): Pérdida de concreto por corrosión expansiva y pérdida de sección.",
+                        "Falta de confinamiento: Estribado insuficiente o muy espaciado en vigas/columnas.",
+                        "Degradación del concreto: Concreto poroso o desmoronable por mala dosificación (alta relación agua/cemento).",
+                        "Agrietamiento en 'X' (Corte): Grietas diagonales en paneles o paredes de mampostería.",
+                        "Separación de muros: Agrietamiento en esquinas por rotura de amarre entre muros ortogonales.",
+                        "Efecto de Martilleo: Golpeteo o impacto dinámico entre edificaciones por junta sísmica insuficiente.",
+                        "Torsión Sísmica: Irregularidad estructural por asimetría de ejes o adosamiento lateral.",
+                        "Asentamiento Diferencial: Deformación o grietas por movimiento puntual del terreno de fundación."
+                    ],
+                    rojo: [
+                        "Falla por Columna Corta: Rotura frágil por corte debido a restricción lateral parcial.",
+                        "Falla por Cortante Puro: Grietas frágiles diagonales graves en elementos de carga (vigas/columnas).",
+                        "Falla en Nodo (Viga-Columna): Destrucción o agrietamiento severo en la unión estructural.",
+                        "Pandeo del Acero Longitudinal: Doblado del acero de refuerzo por pérdida total de confinamiento.",
+                        "Aplastamiento del Núcleo: Trituración del concreto por esfuerzo excesivo a compresión.",
+                        "Descalce de Vigas: Pérdida de la longitud de apoyo con riesgo inminente de caída de la viga.",
+                        "Falla por Punzonamiento: Perforación de losa o zapata en la zona de conexión con la columna.",
+                        "Piso Blando (Soft Story): Deformación geométrica permanente en planta baja por falta de rigidez.",
+                        "Discontinuidad Vertical: Daños por muros nacientes o interrupción brusca de elementos de carga.",
+                        "Volcamiento de Muro / Pared: Falla fuera del plano o pérdida de verticalidad en paredes no confinadas.",
+                        "Sobrecarga / Riesgo de Colapso: Sobrecarga por niveles no planificados o impacto de estructuras vecinas.",
+                        "Falla Geotécnica Severa: Licuación local de suelo o inestabilidad de talud activa bajo las fundaciones."
+                    ]
+                    
             };
         }
 
@@ -1441,7 +1498,7 @@
                         card.innerHTML = `
                             <input type="checkbox" value="${itemText}" data-categoria="${sec.key}" ${isChecked ? 'checked' : ''}>
                             <span class="falla-card-texto">${itemText}</span>
-                            <span class="badge badge-${sec.key === 'amarillo' ? 'amarillo' : (sec.key === 'rojo' ? 'rojo' : 'verde')}">${sec.labelBadge}</span>
+                          <!--  <span class="badge badge-${sec.key === 'amarillo' ? 'amarillo' : (sec.key === 'rojo' ? 'rojo' : 'verde')}">${sec.labelBadge}</span> -->
                         `;
                         card.onclick = (e) => {
                             if (e.target.tagName !== 'INPUT') {
@@ -1763,11 +1820,22 @@
                             certDisplay = certStr.length > 5 ? certStr.slice(0, 5) + "*" : certStr + "*";
                         }
 
+                        // CÓDIGO NUEVO CON EMOJIS
+                        let emojiColor = "🟢";
+                        if (r.color === "Amarillo" || r.color === "Yellow" || r.color === "amarillo") {
+                            emojiColor = "🟡";
+                        } else if (r.color === "Rojo" || r.color === "rojo") {
+                            emojiColor = "🔴";
+                        }
+
                         tr.innerHTML = `
                             <td>${r.calle}</td>
                             <td>${r.edificio}</td>
-                            <td><span class="badge ${badgeClass}">${r.color === 'Yellow' ? 'Amarillo' : r.color}</span></td>
-                            <td>${certDisplay}</td>
+                            <td style="text-align: center; font-size: 1.1rem;">${emojiColor}</td>
+
+                            <!-- <td>${certDisplay}</td> -->
+
+                            <td style="text-align: center; white-space: nowrap; font-variant-numeric: tabular-nums;">${certDisplay}</td>
                             <td style="text-align: center; padding: 2px;">
                                 <button class="btn-dots" onclick="lanzarMenuOpciones(event, ${r.id})">⋮</button>
                             </td>
