@@ -1,8 +1,10 @@
-// Incremento de versión a v5.3 para refrescar la caché y limpiar automáticamente
-const CACHE_NAME = 'cuadrilla-cache-v5.5';
+// Incremento de versión a v5.6 para refrescar la caché tras la separación modular
+const CACHE_NAME = 'cuadrilla-cache-v5.6';
 const ASSETS = [
   './',
   './index.html',
+  './styles.css',
+  './app.js',
   './manifest.json',
   './icono-192.png',
   './icono-512.png',

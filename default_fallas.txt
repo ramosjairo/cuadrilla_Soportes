@@ -1,0 +1,71 @@
+Verde; Edificación sin afectación: Estructura e infraestructura primaria estables, sin agrietamientos, deformaciones ni daños por sismo.
+Verde; Estructura sana con daños preexistentes: Elementos portantes primarios estables post-sismo. Presenta patologías previas ajenas al evento dinámico.
+Verde; Humedad Ascendente: Humedad ascendente por capilaridad en base de muros. Degradación del mortero, eflorescencias salinas y desprendimiento de frisos que anulan la cohesión.
+Verde; Humedad por Filtración de Techo: Filtración activa en losa de techo; genera lixiviación de concreto, óxido libre y pérdida de adherencia del acero.
+Verde; Manchas de óxido localizadas en losa por filtración de techo; corrosión incipiente del acero sin pérdida de sección.
+Verde; Falta de recubrimiento - Acero superficial expuesto sin corrosión severa.
+Verde; Fisuración en juntas - Grietas escalonadas en mortero por baja adherencia en mampostería.
+Verde; Segregación del concreto - Cangrejeras o nidos de abeja puntuales por mal vaciado.
+Verde; Fisuras longitudinales - Agrietamiento en vigas por pérdida de adherencia inicial acero-concreto.
+Verde; Aplastamiento local en mampostería - Astillado o trituración menor en vértices de bloques.
+Verde; Fisuras superficiales en frisos/revoques (ancho < 0.5 mm).
+Verde; Desprendimiento puntual de revestimientos, cerámicas o pintura.
+Amarillo; Falla por flexión - Deformación en vigas o losas por fluencia del acero sin rotura frágil.
+Amarillo; Spalling por corrosión - Desprendimiento de recubrimiento y pérdida de sección por corrosión expansiva.
+Amarillo; Estribado deficiente - Falta de confinamiento o estribos muy espaciados en elementos principales.
+Amarillo; Concreto degradado - Desmoronamiento por mala dosificación o alta relación agua/cemento.
+Amarillo; Agrietamiento en X - Grietas diagonales por esfuerzo cortante en paredes de mampostería.
+Amarillo; Separación de muros - Agrietamiento en esquinas por rotura de amarre entre muros ortogonales.
+Amarillo; Efecto de martilleo - Impacto dinámico entre edificaciones por junta sísmica insuficiente.
+Amarillo; Torsión sísmica - Irregularidad estructural por asimetría de ejes o adosamiento lateral.
+Amarillo; Asentamiento diferencial - Deformación o grietas por fallo o movimiento puntual del terreno.
+Rojo; Falla por Columna Corta - Rotura frágil por corte debido a restricción lateral parcial.
+Rojo; Falla por Cortante Puro - Agrietamiento frágil diagonal severo en elementos de carga.
+Rojo; Falla en Nodo - Destrucción o agrietamiento severo en la unión viga-columna.
+Rojo; Pandeo del acero longitudinal - Doblado del acero de refuerzo por pérdida total de confinamiento.
+Rojo; Aplastamiento del núcleo - Trituración del concreto por esfuerzo excesivo a compresión.
+Rojo; Descalce de vigas - Pérdida de la longitud de apoyo con riesgo inminente de caída libre.
+Rojo; Falla por punzonamiento - Perforación de losa o zapata en la zona de conexión con la columna.
+Rojo; Piso Blando (Soft Story) - Deformación geométrica permanente en planta baja por discontinuidad de rigidez.
+Rojo; Discontinuidad vertical - Daños por muros nacientes o interrupción de elementos de carga.
+Rojo; Volcamiento de muro - Falla fuera del plano o pérdida de verticalidad en paredes no confinadas.
+Rojo; Sobrecarga / Riesgo de colapso - Falla por niveles no planificados o caída de estructura adyacente.
+Rojo; Falla geotécnica severa - Licuación local de suelo o inestabilidad de talud activa bajo fundaciones.
+
+
+
+
+
+Verde; Edificación sin afectación - Estructura estable sin daños sísmicos.
+Verde; Edificación sin afectación con daño preexistente - Patologías previas ajenas al sismo.
+Verde; Humedad por capilaridad - Eflorescencias y desprendimiento en base de muros/paredes.
+Verde; Filtración en techo - Humedad activa en losa con lixiviación u óxido.
+Verde; Óxido incipiente - Manchas de corrosión en losa sin pérdida de sección.
+Verde; Falta de recubrimiento - Acero expuesto sin corrosión severa.
+Verde; Fisura en juntas - Grietas finas en mortero de pega de mampostería.
+Verde; Segregación / Cangrejera - Nidos de abeja puntuales por mal vaciado.
+Verde; Fisuras longitudinales - Agrietamiento leve en vigas por falta de adherencia.
+Verde; Aplastamiento en bloques - Astillado o trituración menor en vértices.
+Verde; Fisuras en friso - Agrietamiento superficial (< 0.5 mm).
+Verde; Desprendimiento menor - Caída de revestimiento, cerámica o pintura.
+Amarillo; Falla por flexión - Deformación en vigas o losas por fluencia del acero.
+Amarillo; Spalling por corrosión - Desprendimiento de concreto y pérdida de sección.
+Amarillo; Estribado deficiente - Confinamiento o espaciamiento inadecuado de estribos.
+Amarillo; Concreto degradado - Desmoronamiento por mala dosificación (relación a/c alta).
+Amarillo; Grietas en "X" - Agrietamiento diagonal por cortante en paredes.
+Amarillo; Separación de muros - Pérdida de amarre en esquinas ortogonales.
+Amarillo; Efecto martilleo - Choque entre edificaciones por junta insuficiente.
+Amarillo; Torsión sísmica - Irregularidad en planta o asimetría de ejes.
+Amarillo; Asentamiento diferencial - Deformación o agrietamiento por falla de suelo.
+Rojo; Columna corta - Rotura frágil por restricción lateral parcial.
+Rojo; Cortante puro - Agrietamiento diagonal severo en elementos de carga.
+Rojo; Falla en nodo - Agrietamiento o destrucción en unión viga-columna.
+Rojo; Pandeo de armadura - Doblado de barras por pérdida de confinamiento.
+Rojo; Aplastamiento de núcleo - Trituración del concreto por alta compresión.
+Rojo; Descalce de vigas - Pérdida de apoyo con riesgo de caída.
+Rojo; Punzonamiento - Perforación de losa o zapata en zona de columna.
+Rojo; Piso blando (Soft Story) - Deformación permanente por falta de rigidez en PB.
+Rojo; Discontinuidad vertical - Daño por muros nacientes o interrupción de carga.
+Rojo; Volcamiento de muro - Falla fuera del plano en paredes sin confinar.
+Rojo; Sobrecarga / Colapso - Falla por peso excesivo o impacto vecino.
+Rojo; Falla geotécnica - Licuación de suelo o inestabilidad de talud activa.
